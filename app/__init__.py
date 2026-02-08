@@ -23,7 +23,6 @@ def create_app(config_class=Config):
     app.register_blueprint(api_bp, url_prefix='/api')
 
     with app.app_context():
-        from app import models  # noqa: F401
         db.create_all()
 
     @app.cli.command('import-data')

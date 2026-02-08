@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from app import db
-from app.models import Student, Subject, LearningGoal, Snapshot, TaxonomyScore
+from app.models import Student, Subject, LearningGoal, Snapshot
 
 bp = Blueprint('api', __name__)
 
