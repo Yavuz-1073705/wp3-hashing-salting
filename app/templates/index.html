@@ -4,7 +4,7 @@
 <h1>Welkom bij de Leerlingen Analyse Tool</h1>
 <p>Kies uw rol om verder te gaan.</p>
 <div class="role-selection">
-    <a href="#">Ik ben een Leerling</a>
+    <a href="{{ url_for('student.select') }}">Ik ben een Leerling</a>
     <a href="{{ url_for('teacher.dashboard') }}">Ik ben een Docent</a>
 </div>
 {% endblock %}
