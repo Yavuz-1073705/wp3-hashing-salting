@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 
+{% block title %}Docent Dashboard{% endblock %}
+
 {% block content %}
 <h2>Docent Dashboard</h2>
+<p>Kies een leerling om de resultaten te bekijken.</p>
+
+<ul class="student-list">
+    {% for student in students %}
+    <li>
+        <a href="{{ url_for('teacher.student_detail', student_id=student.id) }}">{{ student.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
