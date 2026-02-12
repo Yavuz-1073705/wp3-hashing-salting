@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
+    color: #333;
 }
 
 header {
@@ -12,6 +13,225 @@ header {
     padding: 1rem;
 }
 
+header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
 main {
     padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* Role selection */
+.role-selection {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.role-selection a {
+    display: block;
+    padding: 1rem 2rem;
+    background: #4a90d9;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.role-selection a:hover {
+    background: #357abd;
+}
+
+/* Student select */
+.student-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.student-list a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+}
+
+.student-list a:hover {
+    background: #4a90d9;
+    color: #fff;
+    border-color: #4a90d9;
+}
+
+/* Learning goal sections */
+.learning-goal {
+    margin-bottom: 2rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: #fafafa;
+}
+
+.learning-goal h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.goal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.subject-label {
+    background: #4a90d9;
+    color: #fff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.keyword-label {
+    background: #e8e8e8;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Snapshots */
+.snapshot {
+    margin-bottom: 1rem;
+}
+
+.snapshot h4 {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+/* Taxonomy table */
+.taxonomy-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.taxonomy-table th,
+.taxonomy-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.taxonomy-table th {
+    font-weight: 600;
+    color: #555;
+}
+
+.taxonomy-table td:first-child {
+    width: 120px;
+    font-weight: 500;
+}
+
+/* Score bars */
+.score-bar {
+    display: inline-block;
+    width: 100px;
+    height: 14px;
+    background: #e8e8e8;
+    border-radius: 7px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.score-fill {
+    height: 100%;
+    border-radius: 7px;
+}
+
+.score-fill.kennen {
+    background: #4a90d9;
+}
+
+.score-fill.kunnen {
+    background: #5cb85c;
+}
+
+.score-fill.confidence {
+    background: #f0ad4e;
+}
+
+.score-value {
+    font-size: 0.8rem;
+    color: #777;
+    margin-left: 0.4rem;
+}
+
+/* Back link */
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #4a90d9;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Student landing page */
+.landing-card {
+    text-align: center;
+    max-width: 520px;
+    margin: 2rem auto;
+}
+
+.landing-card h2 {
+    margin-bottom: 0.5rem;
+}
+
+.feature-preview {
+    text-align: left;
+    display: inline-block;
+    margin: 1rem 0;
+    padding-left: 1.2rem;
+}
+
+.feature-preview li {
+    margin-bottom: 0.4rem;
+}
+
+.coming-soon {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a90d9;
+    margin: 1.5rem 0 1rem;
+}
+
+.meme-img {
+    max-width: 220px;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: #999;
+    font-size: 0.85rem;
+    margin-top: 2rem;
 }

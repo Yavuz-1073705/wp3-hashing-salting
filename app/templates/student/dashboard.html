@@ -1,7 +1,64 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ student.name }} - Dashboard{% endblock %}
+
 {% block content %}
-<h2>Leerling Dashboard</h2>
-<div id="progress-chart"></div>
-<!-- Overviews here -->
+<h2>Dashboard van {{ student.name }}</h2>
+
+{% if not goals %}
+<p>Geen resultaten gevonden voor deze leerling.</p>
+{% endif %}
+
+{% for goal in goals %}
+<section class="learning-goal">
+    <h3>{{ goal.title }}</h3>
+    <p class="goal-meta">
+        <span class="subject-label">{{ goal.subject }}</span>
+        {% for kw in goal.keywords %}
+        <span class="keyword-label">{{ kw }}</span>
+        {% endfor %}
+    </p>
+
+    {% for snapshot in goal.snapshots %}
+    <div class="snapshot">
+        <h4>{{ snapshot.date }} — {{ snapshot.source_type }} ({{ snapshot.source_id }})</h4>
+        <table class="taxonomy-table">
+            <thead>
+                <tr>
+                    <th>Niveau</th>
+                    <th>Kennen</th>
+                    <th>Kunnen</th>
+                    <th>Confidence</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in snapshot.taxonomy %}
+                <tr>
+                    <td>{{ t.level }}</td>
+                    <td>
+                        <div class="score-bar">
+                            <div class="score-fill kennen" style="width: {{ (t.kennen * 100)|round }}%"></div>
+                        </div>
+                        <span class="score-value">{{ (t.kennen * 100)|round }}%</span>
+                    </td>
+                    <td>
+                        <div class="score-bar">
+                            <div class="score-fill kunnen" style="width: {{ (t.kunnen * 100)|round }}%"></div>
+                        </div>
+                        <span class="score-value">{{ (t.kunnen * 100)|round }}%</span>
+                    </td>
+                    <td>
+                        <div class="score-bar">
+                            <div class="score-fill confidence" style="width: {{ (t.confidence * 100)|round }}%"></div>
+                        </div>
+                        <span class="score-value">{{ (t.confidence * 100)|round }}%</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</section>
+{% endfor %}
 {% endblock %}

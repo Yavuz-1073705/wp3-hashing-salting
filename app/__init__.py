@@ -1,3 +1,5 @@
+import os
+import click
 from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
@@ -19,5 +21,16 @@ def create_app(config_class=Config):
     app.register_blueprint(student_bp, url_prefix='/student')
     app.register_blueprint(teacher_bp, url_prefix='/teacher')
     app.register_blueprint(api_bp, url_prefix='/api')
+
+    with app.app_context():
+        db.create_all()
+
+    @app.cli.command('import-data')
+    @click.argument('filepath', default=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'data-sample-small.json'))
+    def import_data_command(filepath):
+        """Import JSON data into the database."""
+        from app.services.importer import import_data
+        print(f"Importing from {filepath}...")
+        import_data(filepath)
 
     return app
