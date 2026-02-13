@@ -425,3 +425,63 @@ footer {
     color: #333;
     font-size: 0.9rem;
 }
+
+/* Keywords List */
+.keywords-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.keyword-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: #f8f9fa;
+    border-left: 3px solid #e0e0e0;
+}
+
+.keyword-strong {
+    border-left-color: #28a745;
+    background: #f0f9f3;
+}
+
+.keyword-moderate {
+    border-left-color: #ffc107;
+    background: #fffbf0;
+}
+
+.keyword-weak {
+    border-left-color: #dc3545;
+    background: #fef5f6;
+}
+
+.keyword-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.keyword-word {
+    font-weight: 500;
+    color: #333;
+}
+
+.keyword-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 8px;
+    background: #e0e0e0;
+    color: #666;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.keyword-score {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+}
