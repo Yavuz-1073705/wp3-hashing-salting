@@ -41,4 +41,49 @@
             </div>
         </div>
     </section>
+
+    <!-- Filters Section -->
+    <section class="dashboard-filters">
+        <h3>Filters</h3>
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="filter-subject">Vak:</label>
+                <select id="filter-subject" class="filter-select">
+                    <option value="">Alle vakken</option>
+                    <option value="12">Biologie</option>
+                    <option value="13">Scheikunde</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-goal">Leerdoel:</label>
+                <select id="filter-goal" class="filter-select">
+                    <option value="">Alle leerdoelen</option>
+                    {% for goal in learning_goals %}
+                    <option value="{{ goal.id }}">{{ goal.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-date-from">Van:</label>
+                <input type="date" id="filter-date-from" class="filter-input">
+            </div>
+            <div class="filter-group">
+                <label for="filter-date-to">Tot:</label>
+                <input type="date" id="filter-date-to" class="filter-input">
+            </div>
+            <button class="btn-apply-filter">Filters Toepassen</button>
+        </div>
+    </section>
+
+    <!-- Progress Over Time Section -->
+    <section class="dashboard-section">
+        <h2>📈 Voortgang Over Tijd</h2>
+        <div class="chart-container">
+            <canvas id="progressChart"></canvas>
+            <div class="chart-placeholder">
+                <p>Grafiek wordt hier getoond</p>
+                <p class="placeholder-note">Line chart met voortgang per datum</p>
+            </div>
+        </div>
+    </section>
 {% endblock %}
