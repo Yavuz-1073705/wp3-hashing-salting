@@ -313,3 +313,115 @@ footer {
     gap: 2rem;
     margin-bottom: 2rem;
 }
+
+/* Learning Goals Cards */
+.learning-goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.goal-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    background: white;
+    transition: all 0.2s;
+}
+
+.goal-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateX(4px);
+}
+
+.goal-strong {
+    border-left: 4px solid #28a745;
+}
+
+.goal-moderate {
+    border-left: 4px solid #ffc107;
+}
+
+.goal-weak {
+    border-left: 4px solid #dc3545;
+}
+
+.goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.goal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.goal-status-badge {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.goal-strong .goal-status-badge {
+    background: #d4edda;
+    color: #155724;
+}
+
+.goal-moderate .goal-status-badge {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.goal-weak .goal-status-badge {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.goal-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.score-label {
+    min-width: 70px;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar.small {
+    height: 12px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a90d9 0%, #357abd 100%);
+    transition: width 0.3s ease;
+}
+
+.score-percentage {
+    min-width: 45px;
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
