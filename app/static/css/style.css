@@ -76,111 +76,6 @@ main {
     border-color: #4a90d9;
 }
 
-/* Learning goal sections */
-.learning-goal {
-    margin-bottom: 2rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.25rem;
-    background: #fafafa;
-}
-
-.learning-goal h3 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-}
-
-.goal-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
-}
-
-.subject-label {
-    background: #4a90d9;
-    color: #fff;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-}
-
-.keyword-label {
-    background: #e8e8e8;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-}
-
-/* Snapshots */
-.snapshot {
-    margin-bottom: 1rem;
-}
-
-.snapshot h4 {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-/* Taxonomy table */
-.taxonomy-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.taxonomy-table th,
-.taxonomy-table td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-.taxonomy-table th {
-    font-weight: 600;
-    color: #555;
-}
-
-.taxonomy-table td:first-child {
-    width: 120px;
-    font-weight: 500;
-}
-
-/* Score bars */
-.score-bar {
-    display: inline-block;
-    width: 100px;
-    height: 14px;
-    background: #e8e8e8;
-    border-radius: 7px;
-    overflow: hidden;
-    vertical-align: middle;
-}
-
-.score-fill {
-    height: 100%;
-    border-radius: 7px;
-}
-
-.score-fill.kennen {
-    background: #4a90d9;
-}
-
-.score-fill.kunnen {
-    background: #5cb85c;
-}
-
-.score-fill.confidence {
-    background: #f0ad4e;
-}
-
-.score-value {
-    font-size: 0.8rem;
-    color: #777;
-    margin-left: 0.4rem;
-}
-
 /* Back link */
 .back-link {
     display: inline-block;
@@ -213,19 +108,6 @@ main {
 
 .feature-preview li {
     margin-bottom: 0.4rem;
-}
-
-.coming-soon {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #4a90d9;
-    margin: 1.5rem 0 1rem;
-}
-
-.meme-img {
-    max-width: 220px;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
 }
 
 footer {
@@ -376,4 +258,58 @@ footer {
 
 .btn-apply-filter:hover {
     background: #357abd;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-section h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+/* Chart Containers */
+.chart-container {
+    position: relative;
+    min-height: 300px;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.chart-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: #999;
+}
+
+.chart-placeholder p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.placeholder-note {
+    font-size: 0.9rem !important;
+    font-style: italic;
+}
+
+/* Dashboard Grid (Two Column Layout) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
