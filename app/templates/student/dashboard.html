@@ -93,38 +93,42 @@
         <section class="dashboard-section">
             <h2>🎯 Leerdoelen</h2>
             <div class="learning-goals-list">
-                {% for goal in learning_goals %}
-                <div class="goal-card {% if goal.avg_kunnen >= 0.75 %}goal-strong{% elif goal.avg_kunnen >= 0.50 %}goal-moderate{% else %}goal-weak{% endif %}">
-                    <div class="goal-header">
-                        <h3>{{ goal.title }}</h3>
-                        <span class="goal-status-badge">
-                            {% if goal.avg_kunnen >= 0.75 %}
-                            ✓ Sterk
-                            {% elif goal.avg_kunnen >= 0.50 %}
-                            ~ Gemiddeld
-                            {% else %}
-                            ! Zwak
-                            {% endif %}
-                        </span>
-                    </div>
-                    <div class="goal-scores">
-                        <div class="score-item">
-                            <span class="score-label">Kennen:</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: {{ (goal.avg_kennen * 100)|round }}%"></div>
-                            </div>
-                            <span class="score-percentage">{{ (goal.avg_kennen * 100)|round }}%</span>
+                {% if learning_goals %}
+                    {% for goal in learning_goals %}
+                    <div class="goal-card {% if goal.avg_kunnen >= 0.75 %}goal-strong{% elif goal.avg_kunnen >= 0.50 %}goal-moderate{% else %}goal-weak{% endif %}">
+                        <div class="goal-header">
+                            <h3>{{ goal.title }}</h3>
+                            <span class="goal-status-badge">
+                                {% if goal.avg_kunnen >= 0.75 %}
+                                ✓ Sterk
+                                {% elif goal.avg_kunnen >= 0.50 %}
+                                ~ Gemiddeld
+                                {% else %}
+                                ! Zwak
+                                {% endif %}
+                            </span>
                         </div>
-                        <div class="score-item">
-                            <span class="score-label">Kunnen:</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: {{ (goal.avg_kunnen * 100)|round }}%"></div>
+                        <div class="goal-scores">
+                            <div class="score-item">
+                                <span class="score-label">Kennen:</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ (goal.avg_kennen * 100)|round }}%"></div>
+                                </div>
+                                <span class="score-percentage">{{ (goal.avg_kennen * 100)|round }}%</span>
                             </div>
-                            <span class="score-percentage">{{ (goal.avg_kunnen * 100)|round }}%</span>
+                            <div class="score-item">
+                                <span class="score-label">Kunnen:</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ (goal.avg_kunnen * 100)|round }}%"></div>
+                                </div>
+                                <span class="score-percentage">{{ (goal.avg_kunnen * 100)|round }}%</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <p class="no-data-message">Er zijn nog geen leerdoelen beschikbaar voor deze student.</p>
+                {% endif %}
             </div>
         </section>
 
@@ -132,20 +136,24 @@
         <section class="dashboard-section">
             <h2>🔑 Kernwoorden & Onderwerpen</h2>
             <div class="keywords-list">
-                {% for keyword in keywords %}
-                <div class="keyword-item {% if keyword.status == 'strong' %}keyword-strong{% elif keyword.status == 'moderate' %}keyword-moderate{% else %}keyword-weak{% endif %}">
-                    <div class="keyword-info">
-                        <span class="keyword-word">{{ keyword.word }}</span>
-                        <span class="keyword-badge">{{ keyword.status }}</span>
-                    </div>
-                    <div class="keyword-score">
-                        <div class="progress-bar small">
-                            <div class="progress-fill" style="width: {{ (keyword.avg_score * 100)|round }}%"></div>
+                {% if keywords %}
+                    {% for keyword in keywords %}
+                    <div class="keyword-item {% if keyword.status == 'strong' %}keyword-strong{% elif keyword.status == 'moderate' %}keyword-moderate{% else %}keyword-weak{% endif %}">
+                        <div class="keyword-info">
+                            <span class="keyword-word">{{ keyword.word }}</span>
+                            <span class="keyword-badge">{{ keyword.status }}</span>
                         </div>
-                        <span class="score-percentage">{{ (keyword.avg_score * 100)|round }}%</span>
+                        <div class="keyword-score">
+                            <div class="progress-bar small">
+                                <div class="progress-fill" style="width: {{ (keyword.avg_score * 100)|round }}%"></div>
+                            </div>
+                            <span class="score-percentage">{{ (keyword.avg_score * 100)|round }}%</span>
+                        </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <p class="no-data-message">Er zijn nog geen kernwoorden beschikbaar voor deze student.</p>
+                {% endif %}
             </div>
         </section>
     </div>
