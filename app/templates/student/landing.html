@@ -6,6 +6,7 @@
 <h2>Leerling Dashboard</h2>
 <p>Kies je account om je resultaten te bekijken.</p>
 
+{% if students %}
 <ul class="student-list">
     {% for student in students %}
     <li>
@@ -13,4 +14,7 @@
     </li>
     {% endfor %}
 </ul>
+{% else %}
+<p class="no-data-message">Er zijn nog geen studenten in het systeem.</p>
+{% endif %}
 {% endblock %}
