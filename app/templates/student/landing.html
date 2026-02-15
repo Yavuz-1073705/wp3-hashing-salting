@@ -1,25 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}Leerling Portal{% endblock %}
+{% block title %}Leerling Selectie{% endblock %}
 
 {% block content %}
-<div class="landing-card">
-    <h2>Welkom, Leerling!</h2>
-    <p>Bekijk je voortgang, leerdoelen en resultaten in het dashboard.</p>
+<h2>Leerling Dashboard</h2>
+<p>Kies je account om je resultaten te bekijken.</p>
 
-    <ul class="feature-preview">
-        <li>📊 Je scores per leerdoel en vak</li>
-        <li>📈 Voortgang over tijd in mooie grafieken</li>
-        <li>🎯 Sterke en zwakke punten per onderwerp</li>
-        <li>💡 Inzicht in je taxonomieniveaus</li>
-    </ul>
-
-    <div style="margin: 2rem 0;">
-        <a href="{{ url_for('student.dashboard') }}" class="role-selection" style="display: inline-block; padding: 1rem 2rem; text-decoration: none;">
-            Ga naar Dashboard →
-        </a>
-    </div>
-
-    <a href="{{ url_for('main.index') }}" class="back-link">&larr; Terug naar de hoofdpagina</a>
-</div>
+<ul class="student-list">
+    {% for student in students %}
+    <li>
+        <a href="{{ url_for('student.dashboard', student_id=student.id) }}">{{ student.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
