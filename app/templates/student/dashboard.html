@@ -13,28 +13,28 @@
     <!-- Summary Statistics -->
     <section class="dashboard-summary">
         <div class="stat-card">
-            <div class="stat-icon">📊</div>
+            <div class="stat-icon">#</div>
             <div class="stat-content">
                 <div class="stat-value">{{ stats.total_snapshots }}</div>
                 <div class="stat-label">Metingen</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">📈</div>
+            <div class="stat-icon">%</div>
             <div class="stat-content">
                 <div class="stat-value">{{ stats.avg_score }}%</div>
                 <div class="stat-label">Gemiddelde Score</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">🎯</div>
+            <div class="stat-icon">+</div>
             <div class="stat-content">
                 <div class="stat-value">{{ stats.learning_goals }}</div>
                 <div class="stat-label">Leerdoelen</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">⚠️</div>
+            <div class="stat-icon">!</div>
             <div class="stat-content">
                 <div class="stat-value">{{ stats.weak_points }}</div>
                 <div class="stat-label">Aandachtspunten</div>
@@ -77,7 +77,7 @@
 
     <!-- Progress Over Time Section -->
     <section class="dashboard-section">
-        <h2>📈 Voortgang Over Tijd</h2>
+        <h2>Voortgang Over Tijd</h2>
         <div class="chart-container">
             <canvas id="progressChart"></canvas>
             <div class="chart-placeholder">
@@ -91,7 +91,7 @@
     <div class="dashboard-grid">
         <!-- Learning Goals Section -->
         <section class="dashboard-section">
-            <h2>🎯 Leerdoelen</h2>
+            <h2>Leerdoelen</h2>
             <div class="learning-goals-list">
                 {% if learning_goals %}
                     {% for goal in learning_goals %}
@@ -134,7 +134,7 @@
 
         <!-- Keywords Section -->
         <section class="dashboard-section">
-            <h2>🔑 Kernwoorden & Onderwerpen</h2>
+            <h2>Kernwoorden & Onderwerpen</h2>
             <div class="keywords-list">
                 {% if keywords %}
                     {% for keyword in keywords %}
@@ -160,7 +160,7 @@
 
     <!-- Taxonomy Section -->
     <section class="dashboard-section">
-        <h2>🔬 Taxonomieniveaus</h2>
+        <h2>Taxonomieniveaus</h2>
         <div class="chart-container">
             <canvas id="taxonomyChart"></canvas>
             <div class="chart-placeholder">
