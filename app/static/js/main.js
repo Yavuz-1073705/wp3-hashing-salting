@@ -39,6 +39,8 @@
         renderStats(goals);
         renderProgressChart(goals);
         renderGoalsChart(goals);
+        renderGoalsList(goals);
+        renderKeywordsList(goals);
         renderTaxonomyChart(goals);
       })
       .catch(function (err) {
@@ -308,5 +310,134 @@
         },
       },
     });
+  }
+
+  function renderGoalsList(goals) {
+    var container = document.getElementById("learning-goals-list");
+
+    if (!goals.length) {
+      container.innerHTML =
+        '<p class="no-data-message">Er zijn nog geen leerdoelen beschikbaar voor deze student.</p>';
+      return;
+    }
+
+    var html = "";
+    goals.forEach(function (g) {
+      var kenSum = 0,
+        kunSum = 0,
+        cnt = 0;
+      g.snapshots.forEach(function (s) {
+        s.taxonomy.forEach(function (t) {
+          kenSum += t.kennen;
+          kunSum += t.kunnen;
+          cnt++;
+        });
+      });
+
+      var avgKen = cnt ? kenSum / cnt : 0;
+      var avgKun = cnt ? kunSum / cnt : 0;
+      var kenPct = Math.round(avgKen * 100);
+      var kunPct = Math.round(avgKun * 100);
+
+      var cssClass =
+        avgKun >= 0.75
+          ? "goal-strong"
+          : avgKun >= 0.5
+          ? "goal-moderate"
+          : "goal-weak";
+      var badge =
+        avgKun >= 0.75
+          ? "&#10003; Sterk"
+          : avgKun >= 0.5
+          ? "~ Gemiddeld"
+          : "! Zwak";
+
+      html +=
+        '<div class="goal-card ' + cssClass + '">' +
+          '<div class="goal-header">' +
+            "<h3>" + escapeHtml(g.title) + "</h3>" +
+            '<span class="goal-status-badge">' + badge + "</span>" +
+          "</div>" +
+          '<div class="goal-scores">' +
+            '<div class="score-item">' +
+              '<span class="score-label">Kennen:</span>' +
+              '<div class="progress-bar"><div class="progress-fill" style="width:' + kenPct + '%"></div></div>' +
+              '<span class="score-percentage">' + kenPct + "%</span>" +
+            "</div>" +
+            '<div class="score-item">' +
+              '<span class="score-label">Kunnen:</span>' +
+              '<div class="progress-bar"><div class="progress-fill" style="width:' + kunPct + '%"></div></div>' +
+              '<span class="score-percentage">' + kunPct + "%</span>" +
+            "</div>" +
+          "</div>" +
+        "</div>";
+    });
+
+    container.innerHTML = html;
+  }
+
+  function renderKeywordsList(goals) {
+    var container = document.getElementById("keywords-list");
+
+    var kwMap = {};
+    goals.forEach(function (g) {
+      var kenSum = 0,
+        kunSum = 0,
+        cnt = 0;
+      g.snapshots.forEach(function (s) {
+        s.taxonomy.forEach(function (t) {
+          kenSum += t.kennen;
+          kunSum += t.kunnen;
+          cnt++;
+        });
+      });
+      var avgScore = cnt ? (kenSum / cnt + kunSum / cnt) / 2 : 0;
+
+      (g.keywords || []).forEach(function (word) {
+        if (!kwMap[word]) kwMap[word] = { scores: [] };
+        kwMap[word].scores.push(avgScore);
+      });
+    });
+
+    var keywords = Object.keys(kwMap);
+    if (!keywords.length) {
+      container.innerHTML =
+        '<p class="no-data-message">Er zijn nog geen kernwoorden beschikbaar voor deze student.</p>';
+      return;
+    }
+
+    var html = "";
+    keywords.forEach(function (word) {
+      var scores = kwMap[word].scores;
+      var avg = scores.reduce(function (a, b) { return a + b; }, 0) / scores.length;
+      var pct = Math.round(avg * 100);
+      var status = avg >= 0.75 ? "strong" : avg >= 0.5 ? "moderate" : "weak";
+      var cssClass =
+        status === "strong"
+          ? "keyword-strong"
+          : status === "moderate"
+          ? "keyword-moderate"
+          : "keyword-weak";
+
+      html +=
+        '<div class="keyword-item ' + cssClass + '">' +
+          '<div class="keyword-info">' +
+            '<span class="keyword-word">' + escapeHtml(word) + "</span>" +
+            '<span class="keyword-badge">' + status + "</span>" +
+          "</div>" +
+          '<div class="keyword-score">' +
+            '<div class="progress-bar small"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+            '<span class="score-percentage">' + pct + "%</span>" +
+          "</div>" +
+        "</div>";
+    });
+
+    container.innerHTML = html;
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
   }
 })();
