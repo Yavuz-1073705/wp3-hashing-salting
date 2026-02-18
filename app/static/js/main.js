@@ -37,6 +37,7 @@
         var goals = data.learningGoals || [];
 
         renderStats(goals);
+        renderProgressChart(goals);
       })
       .catch(function (err) {
         console.error(err);
@@ -77,5 +78,86 @@
     document.getElementById("stat-avg-score").textContent = avgPct + "%";
     document.getElementById("stat-goals").textContent = goals.length;
     document.getElementById("stat-weak").textContent = weakPoints;
+  }
+
+  function renderProgressChart(goals) {
+    var dateMap = {};
+
+    goals.forEach(function (g) {
+      g.snapshots.forEach(function (s) {
+        if (!dateMap[s.date]) {
+          dateMap[s.date] = { kennenSum: 0, kunnenSum: 0, count: 0 };
+        }
+        s.taxonomy.forEach(function (t) {
+          dateMap[s.date].kennenSum += t.kennen;
+          dateMap[s.date].kunnenSum += t.kunnen;
+          dateMap[s.date].count++;
+        });
+      });
+    });
+
+    var dates = Object.keys(dateMap).sort();
+
+    var kennenData = dates.map(function (d) {
+      return dateMap[d].count
+        ? Math.round((dateMap[d].kennenSum / dateMap[d].count) * 100) / 100
+        : 0;
+    });
+    var kunnenData = dates.map(function (d) {
+      return dateMap[d].count
+        ? Math.round((dateMap[d].kunnenSum / dateMap[d].count) * 100) / 100
+        : 0;
+    });
+
+    if (progressChart) progressChart.destroy();
+
+    var ctx = document.getElementById("progressChart").getContext("2d");
+    progressChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: dates,
+        datasets: [
+          {
+            label: "Kennen",
+            data: kennenData,
+            borderColor: "#4a90d9",
+            backgroundColor: "rgba(74, 144, 217, 0.1)",
+            fill: true,
+            tension: 0.3,
+          },
+          {
+            label: "Kunnen",
+            data: kunnenData,
+            borderColor: "#e67e22",
+            backgroundColor: "rgba(230, 126, 34, 0.1)",
+            fill: true,
+            tension: 0.3,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            min: 0,
+            max: 1,
+            title: { display: true, text: "Score" },
+          },
+          x: {
+            title: { display: true, text: "Datum" },
+          },
+        },
+        plugins: {
+          legend: { position: "top" },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                return ctx.dataset.label + ": " + (ctx.parsed.y * 100).toFixed(0) + "%";
+              },
+            },
+          },
+        },
+      },
+    });
   }
 })();
