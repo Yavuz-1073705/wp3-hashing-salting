@@ -38,6 +38,8 @@
 
         renderStats(goals);
         renderProgressChart(goals);
+        renderGoalsChart(goals);
+        renderTaxonomyChart(goals);
       })
       .catch(function (err) {
         console.error(err);
@@ -153,6 +155,153 @@
             callbacks: {
               label: function (ctx) {
                 return ctx.dataset.label + ": " + (ctx.parsed.y * 100).toFixed(0) + "%";
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  function renderGoalsChart(goals) {
+    var labels = [];
+    var kennenScores = [];
+    var kunnenScores = [];
+
+    goals.forEach(function (g) {
+      labels.push(g.title.length > 30 ? g.title.substring(0, 30) + "\u2026" : g.title);
+
+      var kenSum = 0,
+        kunSum = 0,
+        cnt = 0;
+      g.snapshots.forEach(function (s) {
+        s.taxonomy.forEach(function (t) {
+          kenSum += t.kennen;
+          kunSum += t.kunnen;
+          cnt++;
+        });
+      });
+
+      kennenScores.push(cnt ? Math.round((kenSum / cnt) * 100) : 0);
+      kunnenScores.push(cnt ? Math.round((kunSum / cnt) * 100) : 0);
+    });
+
+    if (goalsChart) goalsChart.destroy();
+
+    var ctx = document.getElementById("goalsChart").getContext("2d");
+    goalsChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Kennen %",
+            data: kennenScores,
+            backgroundColor: "#4a90d9",
+          },
+          {
+            label: "Kunnen %",
+            data: kunnenScores,
+            backgroundColor: "#e67e22",
+          },
+        ],
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        scales: {
+          x: {
+            min: 0,
+            max: 100,
+            title: { display: true, text: "Score %" },
+          },
+        },
+        plugins: {
+          legend: { position: "top" },
+        },
+      },
+    });
+  }
+
+  function renderTaxonomyChart(goals) {
+    var levels = ["Onthouden", "Begrijpen", "Toepassen", "Analyseren"];
+    var kennenByLevel = {};
+    var kunnenByLevel = {};
+    var countByLevel = {};
+
+    levels.forEach(function (l) {
+      kennenByLevel[l] = 0;
+      kunnenByLevel[l] = 0;
+      countByLevel[l] = 0;
+    });
+
+    goals.forEach(function (g) {
+      g.snapshots.forEach(function (s) {
+        s.taxonomy.forEach(function (t) {
+          if (kennenByLevel.hasOwnProperty(t.level)) {
+            kennenByLevel[t.level] += t.kennen;
+            kunnenByLevel[t.level] += t.kunnen;
+            countByLevel[t.level]++;
+          }
+        });
+      });
+    });
+
+    var kennenData = levels.map(function (l) {
+      return countByLevel[l]
+        ? Math.round((kennenByLevel[l] / countByLevel[l]) * 100) / 100
+        : 0;
+    });
+    var kunnenData = levels.map(function (l) {
+      return countByLevel[l]
+        ? Math.round((kunnenByLevel[l] / countByLevel[l]) * 100) / 100
+        : 0;
+    });
+
+    if (taxonomyChart) taxonomyChart.destroy();
+
+    var ctx = document.getElementById("taxonomyChart").getContext("2d");
+    taxonomyChart = new Chart(ctx, {
+      type: "radar",
+      data: {
+        labels: levels,
+        datasets: [
+          {
+            label: "Kennen",
+            data: kennenData,
+            borderColor: "#4a90d9",
+            backgroundColor: "rgba(74, 144, 217, 0.2)",
+            pointBackgroundColor: "#4a90d9",
+          },
+          {
+            label: "Kunnen",
+            data: kunnenData,
+            borderColor: "#e67e22",
+            backgroundColor: "rgba(230, 126, 34, 0.2)",
+            pointBackgroundColor: "#e67e22",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          r: {
+            min: 0,
+            max: 1,
+            ticks: {
+              stepSize: 0.2,
+              callback: function (v) {
+                return (v * 100).toFixed(0) + "%";
+              },
+            },
+          },
+        },
+        plugins: {
+          legend: { position: "top" },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                return ctx.dataset.label + ": " + (ctx.parsed.r * 100).toFixed(0) + "%";
               },
             },
           },
