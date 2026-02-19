@@ -52,6 +52,37 @@
     return params.length ? baseUrl + "?" + params.join("&") : baseUrl;
   }
 
+  function populateFilterDropdowns(goals) {
+    var subjects = {};
+    var learningGoals = {};
+
+    goals.forEach(function (g) {
+      if (g.subject) subjects[g.subject] = true;
+      learningGoals[g.title] = true;
+    });
+
+    var subjectSelect = document.getElementById("filter-subject");
+    var goalSelect = document.getElementById("filter-learning-goal");
+
+    if (subjectSelect) {
+      Object.keys(subjects).sort().forEach(function (subject) {
+        var option = document.createElement("option");
+        option.value = subject;
+        option.textContent = subject;
+        subjectSelect.appendChild(option);
+      });
+    }
+
+    if (goalSelect) {
+      Object.keys(learningGoals).sort().forEach(function (goal) {
+        var option = document.createElement("option");
+        option.value = goal;
+        option.textContent = goal.length > 40 ? goal.substring(0, 40) + "..." : goal;
+        goalSelect.appendChild(option);
+      });
+    }
+  }
+
   function loadData() {
     fetch("/api/students/" + studentId)
       .then(function (res) {
