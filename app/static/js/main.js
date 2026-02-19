@@ -64,7 +64,7 @@
     var learningGoals = {};
 
     goals.forEach(function (g) {
-      if (g.subject) subjects[g.subject] = true;
+      if (g.subject && g.subject.name) subjects[g.subject.name] = true;
       learningGoals[g.title] = true;
     });
 
