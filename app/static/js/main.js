@@ -72,6 +72,9 @@
     var goalSelect = document.getElementById("filter-learning-goal");
 
     if (subjectSelect) {
+      while (subjectSelect.options.length > 1) {
+        subjectSelect.remove(1);
+      }
       Object.keys(subjects).sort().forEach(function (subject) {
         var option = document.createElement("option");
         option.value = subject;
@@ -81,6 +84,9 @@
     }
 
     if (goalSelect) {
+      while (goalSelect.options.length > 1) {
+        goalSelect.remove(1);
+      }
       Object.keys(learningGoals).sort().forEach(function (goal) {
         var option = document.createElement("option");
         option.value = goal;
