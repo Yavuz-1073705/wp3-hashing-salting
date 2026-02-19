@@ -27,6 +27,13 @@
 
   loadData();
 
+  var applyFiltersBtn = document.getElementById("apply-filters-btn");
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener("click", function () {
+      loadData();
+    });
+  }
+
   function buildApiUrl() {
     var baseUrl = "/api/students/" + studentId;
     var params = [];
@@ -84,7 +91,8 @@
   }
 
   function loadData() {
-    fetch("/api/students/" + studentId)
+    var apiUrl = buildApiUrl();
+    fetch(apiUrl)
       .then(function (res) {
         if (!res.ok) throw new Error("API fout: " + res.status);
         return res.json();
@@ -92,6 +100,7 @@
       .then(function (data) {
         var goals = data.learningGoals || [];
 
+        populateFilterDropdowns(goals);
         renderStats(goals);
         renderProgressChart(goals);
         renderGoalsChart(goals);
