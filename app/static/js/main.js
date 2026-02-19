@@ -27,6 +27,31 @@
 
   loadData();
 
+  function buildApiUrl() {
+    var baseUrl = "/api/students/" + studentId;
+    var params = [];
+
+    var subject = document.getElementById("filter-subject");
+    var learningGoal = document.getElementById("filter-learning-goal");
+    var dateFrom = document.getElementById("filter-date-from");
+    var dateTo = document.getElementById("filter-date-to");
+
+    if (subject && subject.value) {
+      params.push("subject=" + encodeURIComponent(subject.value));
+    }
+    if (learningGoal && learningGoal.value) {
+      params.push("learning_goal=" + encodeURIComponent(learningGoal.value));
+    }
+    if (dateFrom && dateFrom.value) {
+      params.push("date_from=" + encodeURIComponent(dateFrom.value));
+    }
+    if (dateTo && dateTo.value) {
+      params.push("date_to=" + encodeURIComponent(dateTo.value));
+    }
+
+    return params.length ? baseUrl + "?" + params.join("&") : baseUrl;
+  }
+
   function loadData() {
     fetch("/api/students/" + studentId)
       .then(function (res) {
