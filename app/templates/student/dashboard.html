@@ -10,6 +10,36 @@
         <p class="subtitle">Bekijk je voortgang en resultaten</p>
     </header>
 
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <h2>Filters</h2>
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filter-subject">Vak:</label>
+                <select id="filter-subject">
+                    <option value="">Alle vakken</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-learning-goal">Leerdoel:</label>
+                <select id="filter-learning-goal">
+                    <option value="">Alle leerdoelen</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-date-from">Datum van:</label>
+                <input type="date" id="filter-date-from">
+            </div>
+            <div class="filter-group">
+                <label for="filter-date-to">Datum tot:</label>
+                <input type="date" id="filter-date-to">
+            </div>
+            <div class="filter-group">
+                <button id="apply-filters-btn" class="btn-primary">Filters Toepassen</button>
+            </div>
+        </div>
+    </section>
+
     <!-- Summary Statistics (dynamically updated via AJAX) -->
     <section class="dashboard-summary">
         <div class="stat-card">
