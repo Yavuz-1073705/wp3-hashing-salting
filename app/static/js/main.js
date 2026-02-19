@@ -24,6 +24,7 @@
   var progressChart = null;
   var goalsChart = null;
   var taxonomyChart = null;
+  var dropdownsPopulated = false;
 
   loadData();
 
@@ -106,7 +107,10 @@
       .then(function (data) {
         var goals = data.learningGoals || [];
 
-        populateFilterDropdowns(goals);
+        if (!dropdownsPopulated) {
+          populateFilterDropdowns(goals);
+          dropdownsPopulated = true;
+        }
         renderStats(goals);
         renderProgressChart(goals);
         renderGoalsChart(goals);
