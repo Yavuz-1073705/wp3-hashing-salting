@@ -70,3 +70,10 @@ def get_subjects():
     """Return a list of all subjects."""
     subjects = Subject.query.all()
     return jsonify([s.to_dict() for s in subjects])
+
+
+@bp.route('/class-overview')
+def get_class_overview():
+    """Return aggregated class-level overview for the teacher dashboard."""
+    from app.services.analysis import get_class_overview
+    return jsonify(get_class_overview())
