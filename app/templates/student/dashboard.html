@@ -1,64 +1,113 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ student.name }} - Dashboard{% endblock %}
+{% block title %}Dashboard - {{ student.name }}{% endblock %}
 
 {% block content %}
-<h2>Dashboard van {{ student.name }}</h2>
+<div class="dashboard-container" id="studentDashboard" data-student-id="{{ student.id }}">
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <h1>Dashboard van {{ student.name }}</h1>
+        <p class="subtitle">Bekijk je voortgang en resultaten</p>
+    </header>
 
-{% if not goals %}
-<p>Geen resultaten gevonden voor deze leerling.</p>
-{% endif %}
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <h2>Filters</h2>
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filter-subject">Vak:</label>
+                <select id="filter-subject">
+                    <option value="">Alle vakken</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-learning-goal">Leerdoel:</label>
+                <select id="filter-learning-goal">
+                    <option value="">Alle leerdoelen</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-date-from">Datum van:</label>
+                <input type="date" id="filter-date-from">
+            </div>
+            <div class="filter-group">
+                <label for="filter-date-to">Datum tot:</label>
+                <input type="date" id="filter-date-to">
+            </div>
+            <div class="filter-group">
+                <button id="apply-filters-btn" class="btn-primary">Filters Toepassen</button>
+            </div>
+        </div>
+    </section>
 
-{% for goal in goals %}
-<section class="learning-goal">
-    <h3>{{ goal.title }}</h3>
-    <p class="goal-meta">
-        <span class="subject-label">{{ goal.subject }}</span>
-        {% for kw in goal.keywords %}
-        <span class="keyword-label">{{ kw }}</span>
-        {% endfor %}
-    </p>
+    <!-- Summary Statistics (dynamically updated via AJAX) -->
+    <section class="dashboard-summary">
+        <div class="stat-card">
+            <div class="stat-icon">#</div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-snapshots">-</div>
+                <div class="stat-label">Metingen</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">%</div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-avg-score">-</div>
+                <div class="stat-label">Gemiddelde Score</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">+</div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-goals">-</div>
+                <div class="stat-label">Leerdoelen</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">!</div>
+            <div class="stat-content">
+                <div class="stat-value" id="stat-weak">-</div>
+                <div class="stat-label">Aandachtspunten</div>
+            </div>
+        </div>
+    </section>
 
-    {% for snapshot in goal.snapshots %}
-    <div class="snapshot">
-        <h4>{{ snapshot.date }} — {{ snapshot.source_type }} ({{ snapshot.source_id }})</h4>
-        <table class="taxonomy-table">
-            <thead>
-                <tr>
-                    <th>Niveau</th>
-                    <th>Kennen</th>
-                    <th>Kunnen</th>
-                    <th>Confidence</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for t in snapshot.taxonomy %}
-                <tr>
-                    <td>{{ t.level }}</td>
-                    <td>
-                        <div class="score-bar">
-                            <div class="score-fill kennen" style="width: {{ (t.kennen * 100)|round }}%"></div>
-                        </div>
-                        <span class="score-value">{{ (t.kennen * 100)|round }}%</span>
-                    </td>
-                    <td>
-                        <div class="score-bar">
-                            <div class="score-fill kunnen" style="width: {{ (t.kunnen * 100)|round }}%"></div>
-                        </div>
-                        <span class="score-value">{{ (t.kunnen * 100)|round }}%</span>
-                    </td>
-                    <td>
-                        <div class="score-bar">
-                            <div class="score-fill confidence" style="width: {{ (t.confidence * 100)|round }}%"></div>
-                        </div>
-                        <span class="score-value">{{ (t.confidence * 100)|round }}%</span>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Progress Over Time Section -->
+    <section class="dashboard-section">
+        <h2>Voortgang Over Tijd</h2>
+        <div class="chart-container">
+            <canvas id="progressChart"></canvas>
+        </div>
+    </section>
+
+    <!-- Two Column Layout -->
+    <div class="dashboard-grid">
+        <!-- Learning Goals Section -->
+        <section class="dashboard-section">
+            <h2>Leerdoelen</h2>
+            <div class="chart-container">
+                <canvas id="goalsChart"></canvas>
+            </div>
+            <div class="learning-goals-list" id="learning-goals-list">
+                <p class="no-data-message">Gegevens worden geladen...</p>
+            </div>
+        </section>
+
+        <!-- Keywords Section -->
+        <section class="dashboard-section">
+            <h2>Kernwoorden &amp; Onderwerpen</h2>
+            <div class="keywords-list" id="keywords-list">
+                <p class="no-data-message">Gegevens worden geladen...</p>
+            </div>
+        </section>
     </div>
-    {% endfor %}
-</section>
-{% endfor %}
+
+    <!-- Taxonomy Section -->
+    <section class="dashboard-section">
+        <h2>Taxonomieniveaus</h2>
+        <div class="chart-container">
+            <canvas id="taxonomyChart"></canvas>
+        </div>
+    </section>
+</div>
 {% endblock %}
