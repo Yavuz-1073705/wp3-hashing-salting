@@ -78,6 +78,7 @@
 
     var subject = document.getElementById("filter-subject");
     var learningGoal = document.getElementById("filter-learning-goal");
+    var keyword = document.getElementById("filter-keyword");
     var dateFrom = document.getElementById("filter-date-from");
     var dateTo = document.getElementById("filter-date-to");
 
@@ -86,6 +87,9 @@
     }
     if (learningGoal && learningGoal.value) {
       params.push("learning_goal=" + encodeURIComponent(learningGoal.value));
+    }
+    if (keyword && keyword.value) {
+      params.push("keyword=" + encodeURIComponent(keyword.value));
     }
     if (dateFrom && dateFrom.value) {
       params.push("date_from=" + encodeURIComponent(dateFrom.value));
