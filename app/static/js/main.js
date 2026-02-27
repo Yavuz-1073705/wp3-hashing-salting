@@ -104,14 +104,17 @@
   function populateFilterDropdowns(goals) {
     var subjects = {};
     var learningGoals = {};
+    var keywords = {};
 
     goals.forEach(function (g) {
       if (g.subject && g.subject.name) subjects[g.subject.name] = true;
       learningGoals[g.title] = true;
+      (g.keywords || []).forEach(function (w) { keywords[w] = true; });
     });
 
     var subjectSelect = document.getElementById("filter-subject");
     var goalSelect = document.getElementById("filter-learning-goal");
+    var kwSelect = document.getElementById("filter-keyword");
 
     if (subjectSelect) {
       while (subjectSelect.options.length > 1) {
@@ -134,6 +137,18 @@
         option.value = goal;
         option.textContent = goal.length > 40 ? goal.substring(0, 40) + "..." : goal;
         goalSelect.appendChild(option);
+      });
+    }
+
+    if (kwSelect) {
+      while (kwSelect.options.length > 1) {
+        kwSelect.remove(1);
+      }
+      Object.keys(keywords).sort().forEach(function (word) {
+        var option = document.createElement("option");
+        option.value = word;
+        option.textContent = word;
+        kwSelect.appendChild(option);
       });
     }
   }
