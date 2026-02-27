@@ -1,15 +1,7 @@
 /**
  * Student Dashboard – AJAX data loading & Chart.js visualisaties.
- *
- * TODO (FILTERS):
- *   Voeg hier de filterfunctionaliteit toe. Wat moet er gebeuren:
- *   1. Voeg een filter-sectie toe in student/dashboard.html met dropdowns voor
- *      vak (subject), leerdoel (learning_goal) en datumbereik (date_from / date_to).
- *   2. Schrijf een functie buildApiUrl() die de filterwaarden uitleest en als
- *      query-parameters toevoegt aan "/api/students/<id>".
- *      De API ondersteunt al: ?subject=, ?learning_goal=, ?date_from=, ?date_to=
- *   3. Koppel een click-event aan de "Filters Toepassen"-knop die loadData() aanroept.
- *   4. Vul de dropdowns dynamisch vanuit de API-data (vakken en leerdoelen).
+ * Filters (vak, leerdoel, kernwoord, datumbereik) worden asynchroon
+ * toegepast via query-parameters op /api/students/<id>.
  */
 
 (function () {
@@ -26,11 +18,56 @@
   var taxonomyChart = null;
   var dropdownsPopulated = false;
 
+  // ---- UI helpers --------------------------------------------------------
+
+  function showLoading() {
+    var el = document.getElementById("filter-loading");
+    if (el) el.hidden = false;
+  }
+
+  function hideLoading() {
+    var el = document.getElementById("filter-loading");
+    if (el) el.hidden = true;
+  }
+
+  function showNoResults(msg) {
+    var el = document.getElementById("filter-no-results");
+    if (!el) return;
+    if (msg) el.innerHTML = msg;
+    el.hidden = false;
+  }
+
+  function clearNoResults() {
+    var el = document.getElementById("filter-no-results");
+    if (el) el.hidden = true;
+  }
+
+  function clearAllFilters() {
+    var ids = ["filter-subject", "filter-learning-goal", "filter-keyword",
+               "filter-date-from", "filter-date-to"];
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    clearNoResults();
+  }
+
+  // ---- Initialise --------------------------------------------------------
+
   loadData();
 
   var applyFiltersBtn = document.getElementById("apply-filters-btn");
   if (applyFiltersBtn) {
     applyFiltersBtn.addEventListener("click", function () {
+      clearNoResults();
+      loadData();
+    });
+  }
+
+  var resetFiltersBtn = document.getElementById("reset-filters-btn");
+  if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener("click", function () {
+      clearAllFilters();
       loadData();
     });
   }
