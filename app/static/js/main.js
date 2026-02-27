@@ -155,18 +155,38 @@
 
   function loadData() {
     var apiUrl = buildApiUrl();
+    showLoading();
+    clearNoResults();
+
     fetch(apiUrl)
       .then(function (res) {
-        if (!res.ok) throw new Error("API fout: " + res.status);
+        if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
       .then(function (data) {
+        hideLoading();
         var goals = data.learningGoals || [];
 
         if (!dropdownsPopulated) {
+          // populate dropdowns once from the unfiltered initial load
           populateFilterDropdowns(goals);
           dropdownsPopulated = true;
         }
+
+        if (!goals.length) {
+          showNoResults(
+            "Geen resultaten gevonden voor de gekozen filters. " +
+            "Pas je filters aan of klik op <strong>Reset</strong> om alle data te bekijken."
+          );
+          renderStats([]);
+          renderProgressChart([]);
+          renderGoalsChart([]);
+          renderGoalsList([]);
+          renderKeywordsList([]);
+          renderTaxonomyChart([]);
+          return;
+        }
+
         renderStats(goals);
         renderProgressChart(goals);
         renderGoalsChart(goals);
@@ -175,7 +195,12 @@
         renderTaxonomyChart(goals);
       })
       .catch(function (err) {
-        console.error(err);
+        hideLoading();
+        showNoResults(
+          "Er is een fout opgetreden bij het ophalen van de gegevens. " +
+          "Probeer het opnieuw of neem contact op met de beheerder."
+        );
+        console.error("loadData fout:", err);
       });
   }
 
