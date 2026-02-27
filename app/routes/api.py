@@ -21,6 +21,7 @@ def get_student(student_id):
 
     filter_subject = request.args.get('subject')
     filter_learning_goal = request.args.get('learning_goal')
+    filter_keyword = request.args.get('keyword')
     filter_date_from = request.args.get('date_from')
     filter_date_to = request.args.get('date_to')
 
@@ -47,6 +48,12 @@ def get_student(student_id):
             # Filter by learning goal title
             if filter_learning_goal and lg.title != filter_learning_goal:
                 continue
+
+            # Filter by keyword
+            if filter_keyword:
+                keyword_words = [k.word for k in lg.keywords]
+                if filter_keyword not in keyword_words:
+                    continue
 
             goals_map[lg_id] = {
                 'id': lg.id,
