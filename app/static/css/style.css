@@ -226,6 +226,46 @@ footer {
     background: #6888a5;
 }
 
+.btn-secondary {
+    padding: 0.4rem 1rem;
+    background: #fff;
+    color: #6888a5;
+    border: 1px solid #b8c8d8;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+    background: #e8eef3;
+    border-color: #9ab4c8;
+    color: #3a5570;
+}
+
+.filter-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.filter-loading {
+    margin-top: 0.6rem;
+    color: #8aa4b8;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.filter-no-results {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    background: #fff8e6;
+    border: 1px solid #e8d88a;
+    border-radius: 6px;
+    color: #7a6530;
+    font-size: 0.9rem;
+}
+
 /* ===== Sections ===== */
 .dashboard-section {
     background: #fff;
