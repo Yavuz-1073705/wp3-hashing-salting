@@ -1,13 +1,28 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, redirect, url_for, g, flash
 from app import db
 from app.models import Student, Snapshot, LearningGoal
 
 bp = Blueprint('teacher', __name__)
 
 
+def _require_teacher():
+    """Redirect unauthenticated or non-teacher users."""
+    if not g.current_user:
+        flash('Je moet ingelogd zijn om deze pagina te bezoeken.', 'warning')
+        return redirect(url_for('auth.login'))
+    if g.current_user.role != 'teacher':
+        flash('Alleen docenten hebben toegang tot dit gedeelte.', 'error')
+        return redirect(url_for('main.index'))
+    return None
+
+
 @bp.route('/')
 def dashboard():
     """Teacher dashboard: list of all students."""
+    redirect_response = _require_teacher()
+    if redirect_response:
+        return redirect_response
+
     students = Student.query.order_by(Student.name).all()
     return render_template('teacher/dashboard.html', students=students)
 
@@ -15,6 +30,10 @@ def dashboard():
 @bp.route('/student/<int:student_id>')
 def student_detail(student_id):
     """Teacher view: student detail with learning goals and snapshots."""
+    redirect_response = _require_teacher()
+    if redirect_response:
+        return redirect_response
+
     student = db.session.get(Student, student_id)
     if not student:
         abort(404)
