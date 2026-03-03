@@ -16,27 +16,38 @@
         <div class="filters-container">
             <div class="filter-group">
                 <label for="filter-subject">Vak:</label>
-                <select id="filter-subject">
+                <select id="filter-subject" aria-label="Filter op vak">
                     <option value="">Alle vakken</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="filter-learning-goal">Leerdoel:</label>
-                <select id="filter-learning-goal">
+                <select id="filter-learning-goal" aria-label="Filter op leerdoel">
                     <option value="">Alle leerdoelen</option>
                 </select>
             </div>
             <div class="filter-group">
+                <label for="filter-keyword">Kernwoord:</label>
+                <select id="filter-keyword" aria-label="Filter op kernwoord">
+                    <option value="">Alle kernwoorden</option>
+                </select>
+            </div>
+            <div class="filter-group">
                 <label for="filter-date-from">Datum van:</label>
-                <input type="date" id="filter-date-from">
+                <input type="date" id="filter-date-from" aria-label="Begindatum filter">
             </div>
             <div class="filter-group">
                 <label for="filter-date-to">Datum tot:</label>
-                <input type="date" id="filter-date-to">
+                <input type="date" id="filter-date-to" aria-label="Einddatum filter">
             </div>
-            <div class="filter-group">
+            <div class="filter-group filter-actions">
                 <button id="apply-filters-btn" class="btn-primary">Filters Toepassen</button>
+                <button id="reset-filters-btn" class="btn-secondary">Reset</button>
             </div>
+        </div>
+        <div id="filter-loading" class="filter-loading" aria-live="polite" hidden>Resultaten worden geladen…</div>
+        <div id="filter-no-results" class="filter-no-results" role="alert" hidden>
+            Geen resultaten gevonden voor de gekozen filters. Pas je filters aan of klik op <strong>Reset</strong> om alle data te bekijken.
         </div>
     </section>
 

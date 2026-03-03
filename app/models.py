@@ -1,4 +1,5 @@
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Association table for LearningGoal and Keyword
 learning_goal_keywords = db.Table('learning_goal_keywords',
@@ -76,3 +77,24 @@ class TaxonomyScore(db.Model):
             'kunnen': self.kunnen,
             'confidence': self.confidence
         }
+
+
+class User(db.Model):
+    """Application user: either a student or a teacher."""
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    # role: 'student' or 'teacher'
+    role = db.Column(db.String(20), nullable=False, default='student')
+    # Foreign key to the Student record (only used for role 'student')
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=True)
+    student = db.relationship('Student', backref=db.backref('user', uselist=False))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def to_dict(self):
+        return {'id': self.id, 'email': self.email, 'role': self.role}

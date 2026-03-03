@@ -1,15 +1,7 @@
 /**
  * Student Dashboard – AJAX data loading & Chart.js visualisaties.
- *
- * TODO (FILTERS):
- *   Voeg hier de filterfunctionaliteit toe. Wat moet er gebeuren:
- *   1. Voeg een filter-sectie toe in student/dashboard.html met dropdowns voor
- *      vak (subject), leerdoel (learning_goal) en datumbereik (date_from / date_to).
- *   2. Schrijf een functie buildApiUrl() die de filterwaarden uitleest en als
- *      query-parameters toevoegt aan "/api/students/<id>".
- *      De API ondersteunt al: ?subject=, ?learning_goal=, ?date_from=, ?date_to=
- *   3. Koppel een click-event aan de "Filters Toepassen"-knop die loadData() aanroept.
- *   4. Vul de dropdowns dynamisch vanuit de API-data (vakken en leerdoelen).
+ * Filters (vak, leerdoel, kernwoord, datumbereik) worden asynchroon
+ * toegepast via query-parameters op /api/students/<id>.
  */
 
 (function () {
@@ -26,11 +18,56 @@
   var taxonomyChart = null;
   var dropdownsPopulated = false;
 
+  // ---- UI helpers --------------------------------------------------------
+
+  function showLoading() {
+    var el = document.getElementById("filter-loading");
+    if (el) el.hidden = false;
+  }
+
+  function hideLoading() {
+    var el = document.getElementById("filter-loading");
+    if (el) el.hidden = true;
+  }
+
+  function showNoResults(msg) {
+    var el = document.getElementById("filter-no-results");
+    if (!el) return;
+    if (msg) el.innerHTML = msg;
+    el.hidden = false;
+  }
+
+  function clearNoResults() {
+    var el = document.getElementById("filter-no-results");
+    if (el) el.hidden = true;
+  }
+
+  function clearAllFilters() {
+    var ids = ["filter-subject", "filter-learning-goal", "filter-keyword",
+               "filter-date-from", "filter-date-to"];
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    clearNoResults();
+  }
+
+  // ---- Initialise --------------------------------------------------------
+
   loadData();
 
   var applyFiltersBtn = document.getElementById("apply-filters-btn");
   if (applyFiltersBtn) {
     applyFiltersBtn.addEventListener("click", function () {
+      clearNoResults();
+      loadData();
+    });
+  }
+
+  var resetFiltersBtn = document.getElementById("reset-filters-btn");
+  if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener("click", function () {
+      clearAllFilters();
       loadData();
     });
   }
@@ -41,6 +78,7 @@
 
     var subject = document.getElementById("filter-subject");
     var learningGoal = document.getElementById("filter-learning-goal");
+    var keyword = document.getElementById("filter-keyword");
     var dateFrom = document.getElementById("filter-date-from");
     var dateTo = document.getElementById("filter-date-to");
 
@@ -49,6 +87,9 @@
     }
     if (learningGoal && learningGoal.value) {
       params.push("learning_goal=" + encodeURIComponent(learningGoal.value));
+    }
+    if (keyword && keyword.value) {
+      params.push("keyword=" + encodeURIComponent(keyword.value));
     }
     if (dateFrom && dateFrom.value) {
       params.push("date_from=" + encodeURIComponent(dateFrom.value));
@@ -63,14 +104,17 @@
   function populateFilterDropdowns(goals) {
     var subjects = {};
     var learningGoals = {};
+    var keywords = {};
 
     goals.forEach(function (g) {
       if (g.subject && g.subject.name) subjects[g.subject.name] = true;
       learningGoals[g.title] = true;
+      (g.keywords || []).forEach(function (w) { keywords[w] = true; });
     });
 
     var subjectSelect = document.getElementById("filter-subject");
     var goalSelect = document.getElementById("filter-learning-goal");
+    var kwSelect = document.getElementById("filter-keyword");
 
     if (subjectSelect) {
       while (subjectSelect.options.length > 1) {
@@ -95,22 +139,54 @@
         goalSelect.appendChild(option);
       });
     }
+
+    if (kwSelect) {
+      while (kwSelect.options.length > 1) {
+        kwSelect.remove(1);
+      }
+      Object.keys(keywords).sort().forEach(function (word) {
+        var option = document.createElement("option");
+        option.value = word;
+        option.textContent = word;
+        kwSelect.appendChild(option);
+      });
+    }
   }
 
   function loadData() {
     var apiUrl = buildApiUrl();
+    showLoading();
+    clearNoResults();
+
     fetch(apiUrl)
       .then(function (res) {
-        if (!res.ok) throw new Error("API fout: " + res.status);
+        if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
       .then(function (data) {
+        hideLoading();
         var goals = data.learningGoals || [];
 
         if (!dropdownsPopulated) {
+          // populate dropdowns once from the unfiltered initial load
           populateFilterDropdowns(goals);
           dropdownsPopulated = true;
         }
+
+        if (!goals.length) {
+          showNoResults(
+            "Geen resultaten gevonden voor de gekozen filters. " +
+            "Pas je filters aan of klik op <strong>Reset</strong> om alle data te bekijken."
+          );
+          renderStats([]);
+          renderProgressChart([]);
+          renderGoalsChart([]);
+          renderGoalsList([]);
+          renderKeywordsList([]);
+          renderTaxonomyChart([]);
+          return;
+        }
+
         renderStats(goals);
         renderProgressChart(goals);
         renderGoalsChart(goals);
@@ -119,7 +195,12 @@
         renderTaxonomyChart(goals);
       })
       .catch(function (err) {
-        console.error(err);
+        hideLoading();
+        showNoResults(
+          "Er is een fout opgetreden bij het ophalen van de gegevens. " +
+          "Probeer het opnieuw of neem contact op met de beheerder."
+        );
+        console.error("loadData fout:", err);
       });
   }
 

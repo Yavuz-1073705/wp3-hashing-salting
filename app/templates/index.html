@@ -2,9 +2,21 @@
 
 {% block content %}
 <h1>Welkom bij de Leerlingen Analyse Tool</h1>
-<p>Kies uw rol om verder te gaan.</p>
-<div class="role-selection">
-    <a href="{{ url_for('student.landing') }}">Ik ben een Leerling</a>
-    <a href="{{ url_for('teacher.dashboard') }}">Ik ben een Docent</a>
-</div>
+
+{% if current_user %}
+    <p>Welkom terug, <strong>{{ current_user.email }}</strong>!</p>
+    <div class="role-selection">
+        {% if current_user.role == 'teacher' %}
+        <a href="{{ url_for('teacher.dashboard') }}">Naar Docent Dashboard</a>
+        {% elif current_user.role == 'student' and current_user.student_id %}
+        <a href="{{ url_for('student.dashboard', student_id=current_user.student_id) }}">Naar Mijn Dashboard</a>
+        {% endif %}
+        <a href="{{ url_for('auth.logout') }}">Uitloggen</a>
+    </div>
+{% else %}
+    <p>Kies uw rol om verder te gaan.</p>
+    <div class="role-selection">
+        <a href="{{ url_for('auth.login') }}">Inloggen</a>
+    </div>
+{% endif %}
 {% endblock %}
