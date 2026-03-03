@@ -49,4 +49,31 @@ def create_app(config_class=Config):
         print(f"Importing from {filepath}...")
         import_data(filepath)
 
+    @app.cli.command('seed-users')
+    def seed_users_command():
+        """Create default test users (one teacher + one student account per student record)."""
+        from app.models import User, Student
+        added = 0
+
+        # Teacher account
+        if not User.query.filter_by(email='docent@school.nl').first():
+            teacher = User(email='docent@school.nl', role='teacher')
+            teacher.set_password('docent123')
+            db.session.add(teacher)
+            added += 1
+            print('Docent aangemaakt: docent@school.nl / docent123')
+
+        # Student accounts for all existing student records
+        for student in Student.query.all():
+            email = f'{student.name.lower().replace(" ", ".")}@leerling.nl'
+            if not User.query.filter_by(email=email).first():
+                user = User(email=email, role='student', student_id=student.id)
+                user.set_password('leerling123')
+                db.session.add(user)
+                added += 1
+                print(f'Leerling aangemaakt: {email} / leerling123')
+
+        db.session.commit()
+        print(f'{added} gebruiker(s) aangemaakt.')
+
     return app
