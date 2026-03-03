@@ -39,6 +39,16 @@ def landing():
 @bp.route('/dashboard/<int:student_id>')
 def dashboard(student_id):
     """Student dashboard shell. All data is loaded via AJAX from the API."""
+    redirect_response = _require_login()
+    if redirect_response:
+        return redirect_response
+
+    user = g.current_user
+    # Students may only view their own dashboard
+    if user.role == 'student' and user.student_id != student_id:
+        flash('Je hebt geen toegang tot het dashboard van een andere leerling.', 'error')
+        return redirect(url_for('student.dashboard', student_id=user.student_id))
+
     student = db.session.get(Student, student_id)
     if not student:
         abort(404)
