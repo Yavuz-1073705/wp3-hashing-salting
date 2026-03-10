@@ -315,16 +315,19 @@ footer {
 
 /* ===== Goal Cards ===== */
 .learning-goals-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
 }
 
 .goal-card {
     border: 1px solid #dde3e8;
     border-radius: 8px;
-    padding: 0.75rem;
+    padding: 0.85rem 1rem;
     border-left: 4px solid #cdd5dc;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .goal-strong  { border-left-color: #7cbd8a; }
@@ -334,29 +337,59 @@ footer {
 .goal-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
 
-.goal-header h3 { margin: 0; font-size: 1rem; }
+.goal-header h3 { margin: 0; font-size: 0.95rem; line-height: 1.3; }
 
 .goal-status-badge {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     padding: 0.15rem 0.5rem;
     border-radius: 10px;
     font-weight: 600;
     background: #eef1f4;
     color: #778899;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .goal-strong  .goal-status-badge { background: #e4f2e7; color: #4a7a52; }
 .goal-moderate .goal-status-badge { background: #f2efe4; color: #7a6f40; }
 .goal-weak    .goal-status-badge { background: #f2e4e4; color: #8a5050; }
 
+.goal-subject {
+    font-size: 0.8rem;
+    color: #8a9ab0;
+}
+
+.goal-subject strong {
+    color: #5a7a99;
+    font-weight: 600;
+}
+
+.goal-keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.goal-keyword-tag {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    background: #eef1f4;
+    color: #5a6a7a;
+    font-weight: 500;
+}
+
 .goal-scores {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.25rem;
+    border-top: 1px solid #eef1f4;
 }
 
 .score-item {
@@ -527,7 +560,7 @@ footer {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
+    .learning-goals-list { grid-template-columns: 1fr; }
     .filter-controls { flex-direction: column; }
     .keyword-item { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
     .keyword-score { width: 100%; }
