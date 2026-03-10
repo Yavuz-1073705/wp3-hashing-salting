@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Pagina niet gevonden{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="error-code">404</div>
+    <h1>Pagina niet gevonden</h1>
+    <p>De pagina die je zoekt bestaat niet of is verplaatst.</p>
+    <a href="{{ url_for('main.index') }}" class="btn-primary">Terug naar home</a>
+</div>
+{% endblock %}

@@ -590,13 +590,13 @@ footer {
     font-weight: 600;
 }
 
-.btn-primary {
+.auth-container .btn-primary {
     background: #4a6580;
     color: #fff;
     width: 100%;
 }
 
-.btn-primary:hover { background: #3a5570; }
+.auth-container .btn-primary:hover { background: #3a5570; }
 
 .required { color: #c0392b; font-weight: bold; margin-left: 2px; }
 
@@ -620,4 +620,37 @@ footer {
     padding: 0.6rem 1rem;
     margin-bottom: 1rem;
     font-size: 0.92rem;
+}
+
+/* Error pages (404 / 500) */
+.error-page {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 800;
+    color: #b8c8d8;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.error-page h1 {
+    font-size: 1.6rem;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+}
+
+.error-page p {
+    color: #6c7a89;
+    margin-bottom: 1.5rem;
+}
+
+.error-page .btn-primary {
+    display: inline-block;
+    text-decoration: none;
+    padding: 0.5rem 1.4rem;
 }

@@ -1,6 +1,6 @@
 import os
 import click
-from flask import Flask, g, session
+from flask import Flask, g, session, render_template
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 
@@ -40,6 +40,14 @@ def create_app(config_class=Config):
     def inject_user():
         """Make current_user available in all Jinja templates."""
         return {'current_user': g.get('current_user')}
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('errors/500.html'), 500
 
     @app.cli.command('import-data')
     @click.argument('filepath', default=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'data-sample-small.json'))
