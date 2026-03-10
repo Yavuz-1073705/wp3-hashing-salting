@@ -403,6 +403,10 @@
     });
   }
 
+  function scoreBarColor(pct) {
+    return pct >= 75 ? "#7cbd8a" : pct >= 50 ? "#c8b87c" : "#cc8a8a";
+  }
+
   function renderGoalsList(goals) {
     var container = document.getElementById("learning-goals-list");
 
@@ -416,32 +420,40 @@
     goals.forEach(function (g) {
       var kenSum = 0,
         kunSum = 0,
+        confSum = 0,
         cnt = 0;
       g.snapshots.forEach(function (s) {
         s.taxonomy.forEach(function (t) {
           kenSum += t.kennen;
           kunSum += t.kunnen;
+          if (typeof t.confidence === "number") confSum += t.confidence;
           cnt++;
         });
       });
 
       var avgKen = cnt ? kenSum / cnt : 0;
       var avgKun = cnt ? kunSum / cnt : 0;
+      var avgConf = cnt ? confSum / cnt : 0;
       var kenPct = Math.round(avgKen * 100);
       var kunPct = Math.round(avgKun * 100);
 
       var cssClass =
-        avgKun >= 0.75
-          ? "goal-strong"
-          : avgKun >= 0.5
-          ? "goal-moderate"
-          : "goal-weak";
+        avgKun >= 0.75 ? "goal-strong" : avgKun >= 0.5 ? "goal-moderate" : "goal-weak";
       var badge =
-        avgKun >= 0.75
-          ? "&#10003; Sterk"
-          : avgKun >= 0.5
-          ? "~ Gemiddeld"
-          : "! Zwak";
+        avgKun >= 0.75 ? "&#10003; Sterk" : avgKun >= 0.5 ? "~ Gemiddeld" : "! Zwak";
+
+      // Confidence signal — thresholds calibrated to 0.3–0.7 range in TC data
+      var confClass, confLabel;
+      if (avgConf >= 0.58) {
+        confClass = "conf-high";
+        confLabel = "Hoge betrouwbaarheid";
+      } else if (avgConf >= 0.45) {
+        confClass = "conf-medium";
+        confLabel = "Gemiddelde betrouwbaarheid";
+      } else {
+        confClass = "conf-low";
+        confLabel = "Lage betrouwbaarheid";
+      }
 
       var subjectHtml = g.subject
         ? '<div class="goal-subject">Gerelateerd aan: <strong>' + escapeHtml(g.subject.name) + "</strong></div>"
@@ -467,14 +479,22 @@
           '<div class="goal-scores">' +
             '<div class="score-item">' +
               '<span class="score-label">Kennen:</span>' +
-              '<div class="progress-bar"><div class="progress-fill" style="width:' + kenPct + '%"></div></div>' +
+              '<div class="progress-bar">' +
+                '<div class="progress-fill" style="width:' + kenPct + '%;background:' + scoreBarColor(kenPct) + '"></div>' +
+              '</div>' +
               '<span class="score-percentage">' + kenPct + "%</span>" +
             "</div>" +
             '<div class="score-item">' +
               '<span class="score-label">Kunnen:</span>' +
-              '<div class="progress-bar"><div class="progress-fill" style="width:' + kunPct + '%"></div></div>' +
+              '<div class="progress-bar">' +
+                '<div class="progress-fill" style="width:' + kunPct + '%;background:' + scoreBarColor(kunPct) + '"></div>' +
+              '</div>' +
               '<span class="score-percentage">' + kunPct + "%</span>" +
             "</div>" +
+          "</div>" +
+          '<div class="goal-confidence ' + confClass + '">' +
+            '<span class="conf-dot"></span>' +
+            '<span class="conf-label">' + confLabel + "</span>" +
           "</div>" +
         "</div>";
     });

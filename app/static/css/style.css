@@ -392,6 +392,29 @@ footer {
     border-top: 1px solid #eef1f4;
 }
 
+.goal-confidence {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    margin-top: 0.3rem;
+}
+
+.conf-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.conf-high  .conf-dot   { background: #7cbd8a; }
+.conf-medium .conf-dot  { background: #c8b87c; }
+.conf-low   .conf-dot   { background: #cc8a8a; }
+
+.conf-high  .conf-label { color: #4a7a52; }
+.conf-medium .conf-label { color: #7a6f40; }
+.conf-low   .conf-label { color: #8a5050; }
+
 .score-item {
     display: flex;
     align-items: center;
