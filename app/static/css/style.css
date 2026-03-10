@@ -435,6 +435,34 @@ footer {
     font-weight: 600;
 }
 
+/* ===== Teacher keyword cloud ===== */
+.kw-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.kw-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: default;
+}
+
+.kw-pill-weak     { background: #f2e4e4; color: #7a4040; }
+.kw-pill-moderate { background: #f2efe4; color: #6a5f30; }
+.kw-pill-strong   { background: #e4f2e7; color: #3a6a44; }
+
+.kw-pill-score {
+    font-size: 0.75rem;
+    font-weight: 700;
+    opacity: 0.75;
+}
+
 .keyword-score {
     display: flex;
     align-items: center;
