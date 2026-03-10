@@ -21,7 +21,6 @@ def login():
             return render_template('auth/login.html', error='Verkeerd e-mailadres of wachtwoord')
 
         session['user_id'] = user.id
-        session['role'] = user.role
 
         if user.role == 'teacher':
             return redirect(url_for('teacher.dashboard'))
