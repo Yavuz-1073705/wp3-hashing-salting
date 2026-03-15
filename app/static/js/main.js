@@ -14,7 +14,6 @@
   if (!studentId) return;
 
   var progressChart = null;
-  var goalsChart = null;
   var taxonomyChart = null;
   var dropdownsPopulated = false;
 
@@ -180,18 +179,14 @@
           );
           renderStats([]);
           renderProgressChart([]);
-          renderGoalsChart([]);
           renderGoalsList([]);
-          renderKeywordsList([]);
           renderTaxonomyChart([]);
           return;
         }
 
         renderStats(goals);
         renderProgressChart(goals);
-        renderGoalsChart(goals);
         renderGoalsList(goals);
-        renderKeywordsList(goals);
         renderTaxonomyChart(goals);
       })
       .catch(function (err) {
@@ -321,66 +316,6 @@
     });
   }
 
-  function renderGoalsChart(goals) {
-    var labels = [];
-    var kennenScores = [];
-    var kunnenScores = [];
-
-    goals.forEach(function (g) {
-      labels.push(g.title.length > 30 ? g.title.substring(0, 30) + "\u2026" : g.title);
-
-      var kenSum = 0,
-        kunSum = 0,
-        cnt = 0;
-      g.snapshots.forEach(function (s) {
-        s.taxonomy.forEach(function (t) {
-          kenSum += t.kennen;
-          kunSum += t.kunnen;
-          cnt++;
-        });
-      });
-
-      kennenScores.push(cnt ? Math.round((kenSum / cnt) * 100) : 0);
-      kunnenScores.push(cnt ? Math.round((kunSum / cnt) * 100) : 0);
-    });
-
-    if (goalsChart) goalsChart.destroy();
-
-    var ctx = document.getElementById("goalsChart").getContext("2d");
-    goalsChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Kennen %",
-            data: kennenScores,
-            backgroundColor: "#4a90d9",
-          },
-          {
-            label: "Kunnen %",
-            data: kunnenScores,
-            backgroundColor: "#e67e22",
-          },
-        ],
-      },
-      options: {
-        indexAxis: "y",
-        responsive: true,
-        scales: {
-          x: {
-            min: 0,
-            max: 100,
-            title: { display: true, text: "Score %" },
-          },
-        },
-        plugins: {
-          legend: { position: "top" },
-        },
-      },
-    });
-  }
-
   function renderTaxonomyChart(goals) {
     var levels = ["Onthouden", "Begrijpen", "Toepassen", "Analyseren"];
     var kennenByLevel = {};
@@ -468,6 +403,10 @@
     });
   }
 
+  function scoreBarColor(pct) {
+    return pct >= 75 ? "#7cbd8a" : pct >= 50 ? "#c8b87c" : "#cc8a8a";
+  }
+
   function renderGoalsList(goals) {
     var container = document.getElementById("learning-goals-list");
 
@@ -481,32 +420,53 @@
     goals.forEach(function (g) {
       var kenSum = 0,
         kunSum = 0,
+        confSum = 0,
         cnt = 0;
       g.snapshots.forEach(function (s) {
         s.taxonomy.forEach(function (t) {
           kenSum += t.kennen;
           kunSum += t.kunnen;
+          if (typeof t.confidence === "number") confSum += t.confidence;
           cnt++;
         });
       });
 
       var avgKen = cnt ? kenSum / cnt : 0;
       var avgKun = cnt ? kunSum / cnt : 0;
+      var avgConf = cnt ? confSum / cnt : 0;
       var kenPct = Math.round(avgKen * 100);
       var kunPct = Math.round(avgKun * 100);
 
       var cssClass =
-        avgKun >= 0.75
-          ? "goal-strong"
-          : avgKun >= 0.5
-          ? "goal-moderate"
-          : "goal-weak";
+        avgKun >= 0.75 ? "goal-strong" : avgKun >= 0.5 ? "goal-moderate" : "goal-weak";
       var badge =
-        avgKun >= 0.75
-          ? "&#10003; Sterk"
-          : avgKun >= 0.5
-          ? "~ Gemiddeld"
-          : "! Zwak";
+        avgKun >= 0.75 ? "&#10003; Sterk" : avgKun >= 0.5 ? "~ Gemiddeld" : "! Zwak";
+
+      // Confidence signal — thresholds calibrated to 0.3–0.7 range in TC data
+      var confClass, confLabel;
+      if (avgConf >= 0.58) {
+        confClass = "conf-high";
+        confLabel = "Hoge betrouwbaarheid";
+      } else if (avgConf >= 0.45) {
+        confClass = "conf-medium";
+        confLabel = "Gemiddelde betrouwbaarheid";
+      } else {
+        confClass = "conf-low";
+        confLabel = "Lage betrouwbaarheid";
+      }
+
+      var subjectHtml = g.subject
+        ? '<div class="goal-subject">Gerelateerd aan: <strong>' + escapeHtml(g.subject.name) + "</strong></div>"
+        : "";
+
+      var kwHtml = "";
+      if (g.keywords && g.keywords.length) {
+        kwHtml = '<div class="goal-keyword-tags">';
+        g.keywords.forEach(function (w) {
+          kwHtml += '<span class="goal-keyword-tag">' + escapeHtml(w) + "</span>";
+        });
+        kwHtml += "</div>";
+      }
 
       html +=
         '<div class="goal-card ' + cssClass + '">' +
@@ -514,76 +474,27 @@
             "<h3>" + escapeHtml(g.title) + "</h3>" +
             '<span class="goal-status-badge">' + badge + "</span>" +
           "</div>" +
+          subjectHtml +
+          kwHtml +
           '<div class="goal-scores">' +
             '<div class="score-item">' +
               '<span class="score-label">Kennen:</span>' +
-              '<div class="progress-bar"><div class="progress-fill" style="width:' + kenPct + '%"></div></div>' +
+              '<div class="progress-bar">' +
+                '<div class="progress-fill" style="width:' + kenPct + '%;background:' + scoreBarColor(kenPct) + '"></div>' +
+              '</div>' +
               '<span class="score-percentage">' + kenPct + "%</span>" +
             "</div>" +
             '<div class="score-item">' +
               '<span class="score-label">Kunnen:</span>' +
-              '<div class="progress-bar"><div class="progress-fill" style="width:' + kunPct + '%"></div></div>' +
+              '<div class="progress-bar">' +
+                '<div class="progress-fill" style="width:' + kunPct + '%;background:' + scoreBarColor(kunPct) + '"></div>' +
+              '</div>' +
               '<span class="score-percentage">' + kunPct + "%</span>" +
             "</div>" +
           "</div>" +
-        "</div>";
-    });
-
-    container.innerHTML = html;
-  }
-
-  function renderKeywordsList(goals) {
-    var container = document.getElementById("keywords-list");
-
-    var kwMap = {};
-    goals.forEach(function (g) {
-      var kenSum = 0,
-        kunSum = 0,
-        cnt = 0;
-      g.snapshots.forEach(function (s) {
-        s.taxonomy.forEach(function (t) {
-          kenSum += t.kennen;
-          kunSum += t.kunnen;
-          cnt++;
-        });
-      });
-      var avgScore = cnt ? (kenSum / cnt + kunSum / cnt) / 2 : 0;
-
-      (g.keywords || []).forEach(function (word) {
-        if (!kwMap[word]) kwMap[word] = { scores: [] };
-        kwMap[word].scores.push(avgScore);
-      });
-    });
-
-    var keywords = Object.keys(kwMap);
-    if (!keywords.length) {
-      container.innerHTML =
-        '<p class="no-data-message">Er zijn nog geen kernwoorden beschikbaar voor deze student.</p>';
-      return;
-    }
-
-    var html = "";
-    keywords.forEach(function (word) {
-      var scores = kwMap[word].scores;
-      var avg = scores.reduce(function (a, b) { return a + b; }, 0) / scores.length;
-      var pct = Math.round(avg * 100);
-      var status = avg >= 0.75 ? "strong" : avg >= 0.5 ? "moderate" : "weak";
-      var cssClass =
-        status === "strong"
-          ? "keyword-strong"
-          : status === "moderate"
-          ? "keyword-moderate"
-          : "keyword-weak";
-
-      html +=
-        '<div class="keyword-item ' + cssClass + '">' +
-          '<div class="keyword-info">' +
-            '<span class="keyword-word">' + escapeHtml(word) + "</span>" +
-            '<span class="keyword-badge">' + status + "</span>" +
-          "</div>" +
-          '<div class="keyword-score">' +
-            '<div class="progress-bar small"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-            '<span class="score-percentage">' + pct + "%</span>" +
+          '<div class="goal-confidence ' + confClass + '">' +
+            '<span class="conf-dot"></span>' +
+            '<span class="conf-label">' + confLabel + "</span>" +
           "</div>" +
         "</div>";
     });

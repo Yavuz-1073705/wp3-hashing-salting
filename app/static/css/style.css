@@ -315,16 +315,19 @@ footer {
 
 /* ===== Goal Cards ===== */
 .learning-goals-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
 }
 
 .goal-card {
     border: 1px solid #dde3e8;
     border-radius: 8px;
-    padding: 0.75rem;
+    padding: 0.85rem 1rem;
     border-left: 4px solid #cdd5dc;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .goal-strong  { border-left-color: #7cbd8a; }
@@ -334,30 +337,83 @@ footer {
 .goal-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
 
-.goal-header h3 { margin: 0; font-size: 1rem; }
+.goal-header h3 { margin: 0; font-size: 0.95rem; line-height: 1.3; }
 
 .goal-status-badge {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     padding: 0.15rem 0.5rem;
     border-radius: 10px;
     font-weight: 600;
     background: #eef1f4;
     color: #778899;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .goal-strong  .goal-status-badge { background: #e4f2e7; color: #4a7a52; }
 .goal-moderate .goal-status-badge { background: #f2efe4; color: #7a6f40; }
 .goal-weak    .goal-status-badge { background: #f2e4e4; color: #8a5050; }
 
+.goal-subject {
+    font-size: 0.8rem;
+    color: #8a9ab0;
+}
+
+.goal-subject strong {
+    color: #5a7a99;
+    font-weight: 600;
+}
+
+.goal-keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.goal-keyword-tag {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    background: #eef1f4;
+    color: #5a6a7a;
+    font-weight: 500;
+}
+
 .goal-scores {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.25rem;
+    border-top: 1px solid #eef1f4;
 }
+
+.goal-confidence {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    margin-top: 0.3rem;
+}
+
+.conf-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.conf-high  .conf-dot   { background: #7cbd8a; }
+.conf-medium .conf-dot  { background: #c8b87c; }
+.conf-low   .conf-dot   { background: #cc8a8a; }
+
+.conf-high  .conf-label { color: #4a7a52; }
+.conf-medium .conf-label { color: #7a6f40; }
+.conf-low   .conf-label { color: #8a5050; }
 
 .score-item {
     display: flex;
@@ -400,6 +456,34 @@ footer {
     color: #778899;
     text-transform: uppercase;
     font-weight: 600;
+}
+
+/* ===== Teacher keyword cloud ===== */
+.kw-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.kw-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: default;
+}
+
+.kw-pill-weak     { background: #f2e4e4; color: #7a4040; }
+.kw-pill-moderate { background: #f2efe4; color: #6a5f30; }
+.kw-pill-strong   { background: #e4f2e7; color: #3a6a44; }
+
+.kw-pill-score {
+    font-size: 0.75rem;
+    font-weight: 700;
+    opacity: 0.75;
 }
 
 .keyword-score {
@@ -527,7 +611,7 @@ footer {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
+    .learning-goals-list { grid-template-columns: 1fr; }
     .filter-controls { flex-direction: column; }
     .keyword-item { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
     .keyword-score { width: 100%; }
@@ -590,13 +674,13 @@ footer {
     font-weight: 600;
 }
 
-.btn-primary {
+.auth-container .btn-primary {
     background: #4a6580;
     color: #fff;
     width: 100%;
 }
 
-.btn-primary:hover { background: #3a5570; }
+.auth-container .btn-primary:hover { background: #3a5570; }
 
 .required { color: #c0392b; font-weight: bold; margin-left: 2px; }
 
@@ -620,4 +704,37 @@ footer {
     padding: 0.6rem 1rem;
     margin-bottom: 1rem;
     font-size: 0.92rem;
+}
+
+/* Error pages (404 / 500) */
+.error-page {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 800;
+    color: #b8c8d8;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.error-page h1 {
+    font-size: 1.6rem;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+}
+
+.error-page p {
+    color: #6c7a89;
+    margin-bottom: 1.5rem;
+}
+
+.error-page .btn-primary {
+    display: inline-block;
+    text-decoration: none;
+    padding: 0.5rem 1.4rem;
 }

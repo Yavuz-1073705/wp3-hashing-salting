@@ -1,5 +1,7 @@
+from collections import defaultdict
+
 from app import db
-from app.models import Student, LearningGoal, Snapshot
+from app.models import Student, LearningGoal, Snapshot, TaxonomyScore
 
 TAXONOMY_ORDER = ['Onthouden', 'Begrijpen', 'Toepassen', 'Analyseren']
 
@@ -9,20 +11,56 @@ def get_class_overview():
     Aggregates all snapshot data to produce a class-level overview.
     Returns per-student averages, per-learning-goal averages,
     per-taxonomy-level averages and per-keyword averages.
-    """
-    goal_stats = {}
-    taxonomy_stats = {}
 
+    Uses bulk queries to avoid N+1 query problems.
+    """
     all_snapshots = Snapshot.query.all()
 
+    if not all_snapshots:
+        return {
+            'stats': {
+                'total_students': 0,
+                'class_avg_kunnen': 0,
+                'weak_goals_count': 0,
+                'problem_keywords_count': 0,
+            },
+            'students': [],
+            'learning_goals': [],
+            'taxonomy_levels': [
+                {'level': lvl, 'avg_kennen': 0, 'avg_kunnen': 0}
+                for lvl in TAXONOMY_ORDER
+            ],
+            'keywords': [],
+        }
+
+    snap_ids = [s.id for s in all_snapshots]
+    lg_ids = list(set(s.learning_goal_id for s in all_snapshots))
+
+    # Bulk-load taxonomy scores
+    all_tax = TaxonomyScore.query.filter(TaxonomyScore.snapshot_id.in_(snap_ids)).all()
+    scores_by_snap = defaultdict(list)
+    for ts in all_tax:
+        scores_by_snap[ts.snapshot_id].append(ts)
+
+    # Bulk-load learning goals with their subjects and keywords
+    all_lgs = LearningGoal.query.filter(LearningGoal.id.in_(lg_ids)).all()
+    lg_dict = {lg.id: lg for lg in all_lgs}
+
+    goal_stats = {}
+    taxonomy_stats = {}
+    # Accumulate per-student scores without additional queries
+    student_agg = defaultdict(lambda: {'ken_sum': 0.0, 'kun_sum': 0.0, 'total': 0, 'snap_count': 0})
+
     for snap in all_snapshots:
-        lg = db.session.get(LearningGoal, snap.learning_goal_id)
+        lg = lg_dict.get(snap.learning_goal_id)
         if not lg:
             continue
 
-        scores = list(snap.taxonomy_scores)
+        scores = scores_by_snap.get(snap.id, [])
         if not scores:
             continue
+
+        student_agg[snap.student_id]['snap_count'] += 1
 
         lg_id = snap.learning_goal_id
         if lg_id not in goal_stats:
@@ -42,6 +80,10 @@ def get_class_overview():
             goal_stats[lg_id]['kunnen_sum'] += t.kunnen
             goal_stats[lg_id]['count'] += 1
 
+            student_agg[snap.student_id]['ken_sum'] += t.kennen
+            student_agg[snap.student_id]['kun_sum'] += t.kunnen
+            student_agg[snap.student_id]['total'] += 1
+
             level = t.level
             if level not in taxonomy_stats:
                 taxonomy_stats[level] = {'kennen_sum': 0.0, 'kunnen_sum': 0.0, 'count': 0}
@@ -51,27 +93,17 @@ def get_class_overview():
 
         goal_stats[lg_id]['students'].add(snap.student_id)
 
-    # Per-student averages
+    # Per-student averages (no additional DB queries needed)
     students = Student.query.order_by(Student.name).all()
     student_data = []
     for student in students:
-        snapshots = Snapshot.query.filter_by(student_id=student.id).all()
-        ken_sum = 0.0
-        kun_sum = 0.0
-        total = 0
-
-        for snap in snapshots:
-            for t in snap.taxonomy_scores:
-                ken_sum += t.kennen
-                kun_sum += t.kunnen
-                total += 1
-
+        agg = student_agg[student.id]
         student_data.append({
             'id': student.id,
             'name': student.name,
-            'avg_kennen': round(ken_sum / total, 3) if total else 0,
-            'avg_kunnen': round(kun_sum / total, 3) if total else 0,
-            'snapshot_count': len(snapshots),
+            'avg_kennen': round(agg['ken_sum'] / agg['total'], 3) if agg['total'] else 0,
+            'avg_kunnen': round(agg['kun_sum'] / agg['total'], 3) if agg['total'] else 0,
+            'snapshot_count': agg['snap_count'],
         })
 
     # Build learning goals list sorted by avg kunnen ascending (weakest first)

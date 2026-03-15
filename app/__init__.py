@@ -1,6 +1,6 @@
 import os
 import click
-from flask import Flask, g, session
+from flask import Flask, g, session, render_template
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 
@@ -41,13 +41,29 @@ def create_app(config_class=Config):
         """Make current_user available in all Jinja templates."""
         return {'current_user': g.get('current_user')}
 
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('errors/500.html'), 500
+
     @app.cli.command('import-data')
     @click.argument('filepath', default=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'data-sample-small.json'))
     def import_data_command(filepath):
-        """Import JSON data into the database."""
+        """Import JSON data and ensure a default teacher account exists."""
         from app.services.importer import import_data
+        from app.models import User
         print(f"Importing from {filepath}...")
         import_data(filepath)
+
+        if not User.query.filter_by(email='docent@school.nl').first():
+            teacher = User(email='docent@school.nl', role='teacher')
+            teacher.set_password('docent123')
+            db.session.add(teacher)
+            db.session.commit()
+            print('Docent aangemaakt: docent@school.nl / docent123')
 
     @app.cli.command('seed-users')
     def seed_users_command():

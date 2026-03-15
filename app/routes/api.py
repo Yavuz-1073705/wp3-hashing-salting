@@ -1,13 +1,35 @@
-from flask import Blueprint, jsonify, request
+from collections import defaultdict
+
+from flask import Blueprint, jsonify, request, g
 from app import db
-from app.models import Student, Subject, LearningGoal, Snapshot
+from app.models import Student, Subject, LearningGoal, Snapshot, TaxonomyScore
 
 bp = Blueprint('api', __name__)
 
 
+def _require_login():
+    """Return a 401 JSON response if the user is not logged in, else None."""
+    if not g.current_user:
+        return jsonify({'error': 'Niet ingelogd'}), 401
+    return None
+
+
+def _require_teacher():
+    """Return a 403 JSON response if the user is not a teacher, else None."""
+    err = _require_login()
+    if err:
+        return err
+    if g.current_user.role != 'teacher':
+        return jsonify({'error': 'Toegang geweigerd'}), 403
+    return None
+
+
 @bp.route('/students')
 def get_students():
-    """Return a list of all students."""
+    """Return a list of all students. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
     students = Student.query.all()
     return jsonify([s.to_dict() for s in students])
 
@@ -15,6 +37,14 @@ def get_students():
 @bp.route('/students/<int:student_id>')
 def get_student(student_id):
     """Return a single student with their learning goals and snapshots."""
+    err = _require_login()
+    if err:
+        return err
+
+    # Students may only access their own data
+    if g.current_user.role == 'student' and g.current_user.student_id != student_id:
+        return jsonify({'error': 'Toegang geweigerd'}), 403
+
     student = db.session.get(Student, student_id)
     if not student:
         return jsonify({'error': 'Student niet gevonden'}), 404
@@ -27,10 +57,24 @@ def get_student(student_id):
 
     snapshots = Snapshot.query.filter_by(student_id=student.id).all()
 
+    if not snapshots:
+        return jsonify({'student': student.to_dict(), 'learningGoals': []})
+
+    # Bulk-load taxonomy scores and learning goals to avoid N+1 queries
+    snap_ids = [s.id for s in snapshots]
+    lg_ids = list(set(s.learning_goal_id for s in snapshots))
+
+    all_tax = TaxonomyScore.query.filter(TaxonomyScore.snapshot_id.in_(snap_ids)).all()
+    scores_by_snap = defaultdict(list)
+    for ts in all_tax:
+        scores_by_snap[ts.snapshot_id].append(ts.to_dict())
+
+    all_lgs = LearningGoal.query.filter(LearningGoal.id.in_(lg_ids)).all()
+    lg_dict = {lg.id: lg for lg in all_lgs}
+
     # Group snapshots by learning goal
     goals_map = {}
     for snap in snapshots:
-        # Filter by date range
         if filter_date_from and snap.date < filter_date_from:
             continue
         if filter_date_to and snap.date > filter_date_to:
@@ -38,21 +82,19 @@ def get_student(student_id):
 
         lg_id = snap.learning_goal_id
         if lg_id not in goals_map:
-            lg = db.session.get(LearningGoal, lg_id)
+            lg = lg_dict.get(lg_id)
+            if not lg:
+                continue
 
-            # Filter by subject name
             if filter_subject:
                 if not lg.subject or lg.subject.name != filter_subject:
                     continue
 
-            # Filter by learning goal title
             if filter_learning_goal and lg.title != filter_learning_goal:
                 continue
 
-            # Filter by keyword
             if filter_keyword:
-                keyword_words = [k.word for k in lg.keywords]
-                if filter_keyword not in keyword_words:
+                if filter_keyword not in [k.word for k in lg.keywords]:
                     continue
 
             goals_map[lg_id] = {
@@ -64,7 +106,13 @@ def get_student(student_id):
             }
 
         if lg_id in goals_map:
-            goals_map[lg_id]['snapshots'].append(snap.to_dict())
+            goals_map[lg_id]['snapshots'].append({
+                'id': snap.id,
+                'date': snap.date,
+                'source': {'type': snap.source_type, 'id': snap.source_id},
+                'learning_goal_id': snap.learning_goal_id,
+                'taxonomy': scores_by_snap.get(snap.id, [])
+            })
 
     return jsonify({
         'student': student.to_dict(),
@@ -74,13 +122,19 @@ def get_student(student_id):
 
 @bp.route('/subjects')
 def get_subjects():
-    """Return a list of all subjects."""
+    """Return a list of all subjects. Requires login."""
+    err = _require_login()
+    if err:
+        return err
     subjects = Subject.query.all()
     return jsonify([s.to_dict() for s in subjects])
 
 
 @bp.route('/class-overview')
 def get_class_overview():
-    """Return aggregated class-level overview for the teacher dashboard."""
+    """Return aggregated class-level overview for the teacher dashboard. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
     from app.services.analysis import get_class_overview
     return jsonify(get_class_overview())

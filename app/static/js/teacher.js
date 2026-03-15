@@ -256,7 +256,7 @@
       return;
     }
 
-    var html = "";
+    var html = '<div class="kw-cloud">';
     keywords.forEach(function (kw) {
       var pct = Math.round(kw.avg_score * 100);
       var status =
@@ -267,27 +267,12 @@
           : "weak";
 
       html +=
-        '<div class="keyword-item keyword-' +
-        status +
-        '">' +
-        '<div class="keyword-info">' +
-        '<span class="keyword-word">' +
+        '<span class="kw-pill kw-pill-' + status + '" title="Gemiddelde score: ' + pct + '%">' +
         escapeHtml(kw.word) +
-        "</span>" +
-        '<span class="keyword-badge">' +
-        status +
-        "</span>" +
-        "</div>" +
-        '<div class="keyword-score">' +
-        '<div class="progress-bar small"><div class="progress-fill" style="width:' +
-        pct +
-        '%"></div></div>' +
-        '<span class="score-percentage">' +
-        pct +
-        "%</span>" +
-        "</div>" +
-        "</div>";
+        '<span class="kw-pill-score">' + pct + '%</span>' +
+        '</span>';
     });
+    html += "</div>";
 
     container.innerHTML = html;
   }
