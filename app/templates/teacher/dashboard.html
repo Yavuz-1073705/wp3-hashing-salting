@@ -67,17 +67,6 @@
     <div id="class-keywords-list"></div>
 </div>
 
-<!-- Student selector -->
-<div class="dashboard-section">
-    <h2>Bekijk individuele leerling</h2>
-    <ul class="student-list">
-        {% for student in students %}
-        <li>
-            <a href="{{ url_for('teacher.student_detail', student_id=student.id) }}">{{ student.name }}</a>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
 {% endblock %}
 
 {% block scripts %}

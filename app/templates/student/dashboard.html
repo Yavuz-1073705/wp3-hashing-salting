@@ -6,8 +6,22 @@
 <div class="dashboard-container" id="studentDashboard" data-student-id="{{ student.id }}">
     <!-- Dashboard Header -->
     <header class="dashboard-header">
-        <h1>Dashboard van {{ student.name }}</h1>
-        <p class="subtitle">Bekijk je voortgang en resultaten</p>
+        <div class="dashboard-header-main">
+            <h1>Dashboard van {{ student.name }}</h1>
+            <p class="subtitle">Bekijk je voortgang en resultaten</p>
+        </div>
+        {% if current_user and current_user.role == 'teacher' %}
+        <div class="teacher-actions">
+            {% if not student_user %}
+            <span class="no-account-notice">
+                <span class="no-account-dot"></span> Geen account
+            </span>
+            {% endif %}
+            <a href="{{ url_for('teacher.student_detail', student_id=student.id) }}" class="btn-details">
+                Details bekijken
+            </a>
+        </div>
+        {% endif %}
     </header>
 
     <!-- Filters Section -->

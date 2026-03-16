@@ -14,7 +14,6 @@
                 {% if current_user %}
                     {% if current_user.role == 'teacher' %}
                     <li><a href="{{ url_for('teacher.dashboard') }}">Docent Dashboard</a></li>
-                    <li><a href="{{ url_for('student.landing') }}">Leerlingenlijst</a></li>
                     {% elif current_user.role == 'student' and current_user.student_id %}
                     <li><a href="{{ url_for('student.dashboard', student_id=current_user.student_id) }}">Mijn Dashboard</a></li>
                     {% endif %}

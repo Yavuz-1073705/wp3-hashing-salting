@@ -207,7 +207,7 @@
         '<tr class="' +
         rowClass +
         '">' +
-        '<td><a href="/teacher/student/' +
+        '<td><a href="/student/dashboard/' +
         s.id +
         '">' +
         escapeHtml(s.name) +
