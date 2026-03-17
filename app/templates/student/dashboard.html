@@ -89,27 +89,28 @@
         </div>
     </section>
 
-    <!-- Progress Over Time Section -->
-    <section class="dashboard-section">
-        <h2>Voortgang Over Tijd</h2>
-        <div class="chart-container">
-            <canvas id="progressChart" role="img" aria-label="Lijndiagram met voortgang over de tijd per leerdoel"></canvas>
-        </div>
-    </section>
+    <!-- Charts Row: Progress (70%) + Taxonomy (30%) -->
+    <div class="charts-row">
+        <section class="dashboard-section">
+            <h2>Voortgang Over Tijd</h2>
+            <div class="chart-container">
+                <canvas id="progressChart" role="img" aria-label="Lijndiagram met voortgang over de tijd per leerdoel"></canvas>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <h2>Taxonomieniveaus</h2>
+            <div class="chart-container">
+                <canvas id="taxonomyChart" role="img" aria-label="Radardiagram met scores per taxonomieniveau (Onthouden, Begrijpen, Toepassen, Analyseren)"></canvas>
+            </div>
+        </section>
+    </div>
 
     <!-- Learning Goals Section -->
     <section class="dashboard-section">
         <h2>Leerdoelen</h2>
         <div class="learning-goals-list" id="learning-goals-list">
             <p class="no-data-message">Gegevens worden geladen...</p>
-        </div>
-    </section>
-
-    <!-- Taxonomy Section -->
-    <section class="dashboard-section">
-        <h2>Taxonomieniveaus</h2>
-        <div class="chart-container">
-            <canvas id="taxonomyChart" role="img" aria-label="Radardiagram met scores per taxonomieniveau (Onthouden, Begrijpen, Toepassen, Analyseren)"></canvas>
         </div>
     </section>
 </div>

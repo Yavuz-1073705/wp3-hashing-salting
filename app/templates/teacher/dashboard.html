@@ -10,36 +10,42 @@
 
 <!-- Summary stats (AJAX) -->
 <div class="dashboard-summary">
-    <div class="stat-card">
-        <div class="stat-value" id="stat-students">-</div>
+    <div class="stat-card accent-blue">
+        <div class="stat-card-icon"><i class="fa-solid fa-users"></i></div>
         <div class="stat-label">Leerlingen</div>
+        <div class="stat-value" id="stat-students">—</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-value" id="stat-class-avg">-</div>
+    <div class="stat-card accent-green">
+        <div class="stat-card-icon"><i class="fa-solid fa-chart-line"></i></div>
         <div class="stat-label">Gem. Kunnen (klas)</div>
+        <div class="stat-value" id="stat-class-avg">—</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-value" id="stat-weak-goals">-</div>
+    <div class="stat-card accent-orange">
+        <div class="stat-card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <div class="stat-label">Zwakke leerdoelen</div>
+        <div class="stat-value" id="stat-weak-goals">—</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-value" id="stat-problem-kw">-</div>
+    <div class="stat-card accent-red">
+        <div class="stat-card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
         <div class="stat-label">Probleemkernwoorden</div>
+        <div class="stat-value" id="stat-problem-kw">—</div>
     </div>
 </div>
 
-<!-- Charts -->
-<div class="dashboard-section">
-    <h2>Leerdoelen — 10 zwakste (klasgemiddelde)</h2>
-    <div class="chart-container chart-tall">
-        <canvas id="classGoalsChart" role="img" aria-label="Horizontaal staafdiagram met de 10 zwakste leerdoelen op klasniveau"></canvas>
+<!-- Charts Row: Bar (65%) + Radar (35%) -->
+<div class="charts-row teacher-charts-row">
+    <div class="dashboard-section">
+        <h2>Leerdoelen — 10 zwakste (klasgemiddelde)</h2>
+        <div class="chart-container">
+            <canvas id="classGoalsChart" role="img" aria-label="Horizontaal staafdiagram met de 10 zwakste leerdoelen op klasniveau"></canvas>
+        </div>
     </div>
-</div>
 
-<div class="dashboard-section">
-    <h2>Taxonomieniveaus (klas)</h2>
-    <div class="chart-container">
-        <canvas id="classTaxonomyChart" role="img" aria-label="Radardiagram met gemiddelde klasscore per taxonomieniveau"></canvas>
+    <div class="dashboard-section">
+        <h2>Taxonomieniveaus (klas)</h2>
+        <div class="chart-container">
+            <canvas id="classTaxonomyChart" role="img" aria-label="Radardiagram met gemiddelde klasscore per taxonomieniveau"></canvas>
+        </div>
     </div>
 </div>
 
