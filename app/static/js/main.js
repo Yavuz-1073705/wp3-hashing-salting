@@ -180,10 +180,11 @@
             "Geen resultaten gevonden voor de gekozen filters. " +
             "Pas je filters aan of klik op <strong>Reset</strong> om alle data te bekijken."
           );
-          renderStats([]);
-          renderProgressChart([]);
-          renderGoalsList([]);
-          renderTaxonomyChart([]);
+        renderStats([]);
+        renderProgressChart([]);
+        renderGoalsList([]);
+        renderTaxonomyChart([]);
+        renderKeywordCloud([]);
           return;
         }
 
@@ -191,6 +192,7 @@
         renderProgressChart(goals);
         renderGoalsList(goals);
         renderTaxonomyChart(goals);
+        renderKeywordCloud(goals);
       })
       .catch(function (err) {
         hideLoading();
@@ -336,11 +338,7 @@
           legend: {
             position: "top",
             labels: {
-              usePointStyle: true,
-              pointStyle: "circle",
-              color: "#475569",
-              font: { size: 12 },
-              padding: 16,
+              usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8, color: "#475569", font: { size: 11 }, padding: 16,
             },
           },
           tooltip: {
@@ -445,11 +443,7 @@
           legend: {
             position: "top",
             labels: {
-              usePointStyle: true,
-              pointStyle: "circle",
-              color: "#475569",
-              font: { size: 12 },
-              padding: 16,
+              usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8, color: "#475569", font: { size: 11 }, padding: 16,
             },
           },
           tooltip: {
@@ -476,8 +470,15 @@
       return;
     }
 
+    var sorted = goals.slice().sort(function (a, b) {
+      var avgKunA = 0, cntA = 0, avgKunB = 0, cntB = 0;
+      a.snapshots.forEach(function (s) { s.taxonomy.forEach(function (t) { avgKunA += t.kunnen; cntA++; }); });
+      b.snapshots.forEach(function (s) { s.taxonomy.forEach(function (t) { avgKunB += t.kunnen; cntB++; }); });
+      return (cntA ? avgKunA / cntA : 0) - (cntB ? avgKunB / cntB : 0);
+    });
+
     var html = "";
-    goals.forEach(function (g) {
+    sorted.forEach(function (g) {
       var kenSum = 0,
         kunSum = 0,
         confSum = 0,
@@ -562,10 +563,67 @@
     container.innerHTML = html;
   }
 
+  function renderKeywordCloud(goals) {
+    var container = document.getElementById("student-keywords-list");
+    if (!container) return;
+
+    if (!goals.length) {
+      container.innerHTML = '<p class="no-data-message">Geen kernwoorden beschikbaar.</p>';
+      return;
+    }
+
+    var kwMap = {};
+    goals.forEach(function (g) {
+      if (!g.keywords || !g.keywords.length) return;
+
+      var kenSum = 0, kunSum = 0, cnt = 0;
+      g.snapshots.forEach(function (s) {
+        s.taxonomy.forEach(function (t) {
+          kenSum += t.kennen;
+          kunSum += t.kunnen;
+          cnt++;
+        });
+      });
+      if (!cnt) return;
+
+      var avgKun = kunSum / cnt;
+      g.keywords.forEach(function (w) {
+        if (!kwMap[w]) kwMap[w] = { kunSum: 0, cnt: 0 };
+        kwMap[w].kunSum += avgKun;
+        kwMap[w].cnt++;
+      });
+    });
+
+    var words = Object.keys(kwMap);
+    if (!words.length) {
+      container.innerHTML = '<p class="no-data-message">Geen kernwoorden beschikbaar.</p>';
+      return;
+    }
+
+    words.sort(function (a, b) {
+      return (kwMap[a].kunSum / kwMap[a].cnt) - (kwMap[b].kunSum / kwMap[b].cnt);
+    });
+
+    var html = '<div class="kw-cloud">';
+    words.forEach(function (w) {
+      var avg = kwMap[w].kunSum / kwMap[w].cnt;
+      var pct = Math.round(avg * 100);
+      var status = avg >= 0.75 ? "strong" : avg >= 0.5 ? "moderate" : "weak";
+      html += '<span class="kw-pill kw-pill-' + status + '" title="Gemiddelde kunnen: ' + pct + '%">' +
+        escapeHtml(w) +
+        '<span class="kw-pill-score">' + pct + '%</span>' +
+        '</span>';
+    });
+    html += "</div>";
+    container.innerHTML = html;
+  }
+
   function escapeHtml(text) {
     var div = document.createElement("div");
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
   }
 })();
+
+
 
