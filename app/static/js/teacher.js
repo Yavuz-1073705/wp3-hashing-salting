@@ -59,33 +59,63 @@
         labels: labels,
         datasets: [
           {
-            label: "Kennen %",
+            label: "Kennen",
             data: kennenData,
             backgroundColor: C_KENNEN,
+            borderRadius: 3,
+            barThickness: 10,
           },
           {
-            label: "Kunnen %",
+            label: "Kunnen",
             data: kunnenData,
             backgroundColor: C_KUNNEN,
+            borderRadius: 3,
+            barThickness: 10,
           },
         ],
       },
       options: {
         indexAxis: "y",
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: {
             min: 0,
             max: 100,
-            title: { display: true, text: "Score %" },
+            border: { display: false },
+            ticks: {
+              callback: function (v) { return v + "%"; },
+              color: "#94a3b8",
+              font: { size: 11 },
+            },
+            grid: { color: "rgba(0,0,0,0.04)" },
+          },
+          y: {
+            border: { display: false },
+            ticks: {
+              color: "#475569",
+              font: { size: 11 },
+            },
+            grid: { display: false },
           },
         },
         plugins: {
-          legend: { position: "top" },
+          legend: {
+            position: "top",
+            labels: {
+              usePointStyle: true,
+              pointStyle: "circle",
+              color: "#475569",
+              font: { size: 12 },
+              padding: 16,
+            },
+          },
           tooltip: {
+            backgroundColor: "rgba(15,23,42,0.8)",
+            padding: 10,
             callbacks: {
               label: function (ctx) {
-                return ctx.dataset.label + ": " + ctx.parsed.x + "%";
+                return "  " + ctx.dataset.label + ": " + ctx.parsed.x + "%";
               },
             },
           },
@@ -111,43 +141,60 @@
             label: "Kennen",
             data: kennenData,
             borderColor: C_KENNEN,
-            backgroundColor: "rgba(27, 58, 92, 0.12)",
+            borderWidth: 2,
+            backgroundColor: "rgba(27, 58, 92, 0.08)",
             pointBackgroundColor: C_KENNEN,
+            pointRadius: 3,
+            pointHoverRadius: 5,
           },
           {
             label: "Kunnen",
             data: kunnenData,
             borderColor: C_KUNNEN,
-            backgroundColor: "rgba(74, 144, 196, 0.15)",
+            borderWidth: 2,
+            backgroundColor: "rgba(74, 144, 196, 0.12)",
             pointBackgroundColor: C_KUNNEN,
+            pointRadius: 3,
+            pointHoverRadius: 5,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { top: 4, bottom: 4, left: 8, right: 8 },
+        },
         scales: {
           r: {
             min: 0,
             max: 1,
-            ticks: {
-              stepSize: 0.2,
-              callback: function (v) {
-                return (v * 100).toFixed(0) + "%";
-              },
+            ticks: { display: false },
+            pointLabels: {
+              font: { size: 10, weight: "500" },
+              color: "#64748b",
             },
+            grid: { color: "rgba(0,0,0,0.07)" },
+            angleLines: { color: "rgba(0,0,0,0.07)" },
           },
         },
         plugins: {
-          legend: { position: "top" },
+          legend: {
+            position: "top",
+            labels: {
+              usePointStyle: true,
+              pointStyle: "circle",
+              color: "#475569",
+              font: { size: 12 },
+              padding: 16,
+            },
+          },
           tooltip: {
+            backgroundColor: "rgba(15,23,42,0.8)",
+            padding: 10,
             callbacks: {
               label: function (ctx) {
-                return (
-                  ctx.dataset.label +
-                  ": " +
-                  (ctx.parsed.r * 100).toFixed(0) +
-                  "%"
-                );
+                return "  " + ctx.dataset.label + ": " + (ctx.parsed.r * 100).toFixed(0) + "%";
               },
             },
           },

@@ -279,9 +279,13 @@
             label: "Kennen",
             data: kennenData,
             borderColor: C_KENNEN,
-            backgroundColor: "rgba(27, 58, 92, 0.08)",
-            fill: true,
-            tension: 0.3,
+            backgroundColor: "transparent",
+            fill: false,
+            tension: 0.35,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointBackgroundColor: C_KENNEN,
           },
           {
             label: "Kunnen",
@@ -289,28 +293,62 @@
             borderColor: C_KUNNEN,
             backgroundColor: "rgba(74, 144, 196, 0.10)",
             fill: true,
-            tension: 0.3,
+            tension: 0.35,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointBackgroundColor: C_KUNNEN,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
         scales: {
           y: {
             min: 0,
             max: 1,
-            title: { display: true, text: "Score" },
+            border: { display: false },
+            ticks: {
+              callback: function (v) { return (v * 100).toFixed(0) + "%"; },
+              stepSize: 0.25,
+              color: "#94a3b8",
+              font: { size: 11 },
+            },
+            grid: { color: "rgba(0,0,0,0.04)" },
           },
           x: {
-            title: { display: true, text: "Datum" },
+            border: { display: false },
+            ticks: {
+              maxTicksLimit: 7,
+              maxRotation: 0,
+              color: "#94a3b8",
+              font: { size: 11 },
+            },
+            grid: { display: false },
           },
         },
         plugins: {
-          legend: { position: "top" },
+          legend: {
+            position: "top",
+            labels: {
+              usePointStyle: true,
+              pointStyle: "circle",
+              color: "#475569",
+              font: { size: 12 },
+              padding: 16,
+            },
+          },
           tooltip: {
+            backgroundColor: "rgba(15,23,42,0.8)",
+            padding: 10,
             callbacks: {
               label: function (ctx) {
-                return ctx.dataset.label + ": " + (ctx.parsed.y * 100).toFixed(0) + "%";
+                return "  " + ctx.dataset.label + ": " + (ctx.parsed.y * 100).toFixed(0) + "%";
               },
             },
           },
@@ -366,38 +404,60 @@
             label: "Kennen",
             data: kennenData,
             borderColor: C_KENNEN,
-            backgroundColor: "rgba(27, 58, 92, 0.12)",
+            borderWidth: 2,
+            backgroundColor: "rgba(27, 58, 92, 0.08)",
             pointBackgroundColor: C_KENNEN,
+            pointRadius: 3,
+            pointHoverRadius: 5,
           },
           {
             label: "Kunnen",
             data: kunnenData,
             borderColor: C_KUNNEN,
-            backgroundColor: "rgba(74, 144, 196, 0.15)",
+            borderWidth: 2,
+            backgroundColor: "rgba(74, 144, 196, 0.12)",
             pointBackgroundColor: C_KUNNEN,
+            pointRadius: 3,
+            pointHoverRadius: 5,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { top: 4, bottom: 4, left: 8, right: 8 },
+        },
         scales: {
           r: {
             min: 0,
             max: 1,
-            ticks: {
-              stepSize: 0.2,
-              callback: function (v) {
-                return (v * 100).toFixed(0) + "%";
-              },
+            ticks: { display: false },
+            pointLabels: {
+              font: { size: 10, weight: "500" },
+              color: "#64748b",
             },
+            grid: { color: "rgba(0,0,0,0.07)" },
+            angleLines: { color: "rgba(0,0,0,0.07)" },
           },
         },
         plugins: {
-          legend: { position: "top" },
+          legend: {
+            position: "top",
+            labels: {
+              usePointStyle: true,
+              pointStyle: "circle",
+              color: "#475569",
+              font: { size: 12 },
+              padding: 16,
+            },
+          },
           tooltip: {
+            backgroundColor: "rgba(15,23,42,0.8)",
+            padding: 10,
             callbacks: {
               label: function (ctx) {
-                return ctx.dataset.label + ": " + (ctx.parsed.r * 100).toFixed(0) + "%";
+                return "  " + ctx.dataset.label + ": " + (ctx.parsed.r * 100).toFixed(0) + "%";
               },
             },
           },
@@ -508,3 +568,4 @@
     return div.innerHTML;
   }
 })();
+
