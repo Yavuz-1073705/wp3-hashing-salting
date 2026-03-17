@@ -30,7 +30,7 @@ header nav {
     align-items: center;
     justify-content: space-between;
     height: 56px;
-    max-width: 1120px;
+    max-width: 1220px;
     margin: 0 auto;
 }
 
@@ -101,7 +101,7 @@ header nav li > a:not(.nav-logout):hover {
 
 main {
     flex: 1;
-    max-width: 1120px;
+    max-width: 1220px;
     width: 100%;
     margin: 0 auto;
     padding: 1.75rem 1.5rem;
@@ -116,7 +116,7 @@ footer {
     display: flex;
     align-items: center;
     gap: 1rem;
-    max-width: 1120px;
+    max-width: 1220px;
     margin: 0 auto;
     padding: 1.25rem 1.5rem;
 }
@@ -200,8 +200,32 @@ footer {
 
 /* ===== Dashboard Container ===== */
 .dashboard-container {
-    max-width: 1120px;
+    max-width: 1220px;
     margin: 0 auto;
+}
+
+.charts-row {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 1rem;
+}
+
+.charts-row.teacher-charts-row {
+    grid-template-columns: 3fr 2fr;
+}
+
+.charts-row .dashboard-section {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.charts-row .dashboard-section .chart-container {
+    flex: 1;
+    min-height: 260px;
+    position: relative;
 }
 
 /* ===== Dashboard Header ===== */
@@ -233,9 +257,9 @@ footer {
     align-items: center;
     gap: 0.35rem;
     font-size: 0.8rem;
-    color: #c03535;
-    background: #fdeaea;
-    border: 1px solid #f5c0c0;
+    color: #b04545;
+    background: #fdf4f4;
+    border: 1px solid #e8cece;
     border-radius: 20px;
     padding: 0.2rem 0.65rem;
     white-space: nowrap;
@@ -291,9 +315,9 @@ footer {
 }
 
 .stat-card.accent-blue   { border-top-color: #4A90C4; }
-.stat-card.accent-green  { border-top-color: #22c55e; }
-.stat-card.accent-red    { border-top-color: #e05555; }
-.stat-card.accent-orange { border-top-color: #e08c20; }
+.stat-card.accent-green  { border-top-color: #38b86a; }
+.stat-card.accent-red    { border-top-color: #cc6060; }
+.stat-card.accent-orange { border-top-color: #d48a28; }
 
 .stat-card-icon {
     position: absolute;
@@ -311,9 +335,9 @@ footer {
     font-size: 1rem;
 }
 
-.stat-card.accent-red    .stat-card-icon { background: #fdeaea; color: #e05555; }
-.stat-card.accent-orange .stat-card-icon { background: #fff3db; color: #c07010; }
-.stat-card.accent-green  .stat-card-icon { background: #e4f2e7; color: #16a34a; }
+.stat-card.accent-red    .stat-card-icon { background: #fdf4f4; color: #cc6060; }
+.stat-card.accent-orange .stat-card-icon { background: #fdf5e8; color: #b07820; }
+.stat-card.accent-green  .stat-card-icon { background: #eef6f1; color: #2a9a58; }
 
 .stat-label {
     font-size: 0.74rem;
@@ -559,7 +583,7 @@ footer {
 
 .goal-strong  { border-left-color: #4A90C4; }
 .goal-moderate { border-left-color: #94a3b8; }
-.goal-weak    { border-left-color: #e05555; }
+.goal-weak    { border-left-color: #cc6060; }
 
 .goal-header {
     display: flex;
@@ -583,7 +607,7 @@ footer {
 
 .goal-strong  .goal-status-badge { background: #EBF4FB; color: #3A7FB8; }
 .goal-moderate .goal-status-badge { background: #f1f5f9; color: #64748b; }
-.goal-weak    .goal-status-badge { background: #fdeaea; color: #c03535; }
+.goal-weak    .goal-status-badge { background: #fdf4f4; color: #b04545; }
 
 .goal-subject {
     font-size: 0.8rem;
@@ -636,11 +660,11 @@ footer {
 
 .conf-high  .conf-dot   { background: #4A90C4; }
 .conf-medium .conf-dot  { background: #94a3b8; }
-.conf-low   .conf-dot   { background: #e05555; }
+.conf-low   .conf-dot   { background: #cc6060; }
 
 .conf-high  .conf-label { color: #3A7FB8; }
 .conf-medium .conf-label { color: #64748b; }
-.conf-low   .conf-label { color: #c03535; }
+.conf-low   .conf-label { color: #b04545; }
 
 .score-item {
     display: flex;
@@ -670,7 +694,7 @@ footer {
 
 .keyword-strong  { border-left-color: #4A90C4; }
 .keyword-moderate { border-left-color: #94a3b8; }
-.keyword-weak    { border-left-color: #e05555; }
+.keyword-weak    { border-left-color: #cc6060; }
 
 .keyword-info { display: flex; align-items: center; gap: 0.5rem; }
 .keyword-word { font-weight: 500; color: #1B3A5C; }
@@ -703,7 +727,7 @@ footer {
     cursor: default;
 }
 
-.kw-pill-weak     { background: #fdeaea; color: #c03535; }
+.kw-pill-weak     { background: #fdf4f4; color: #a05050; }
 .kw-pill-moderate { background: #f1f5f9; color: #64748b; }
 .kw-pill-strong   { background: #EBF4FB; color: #3A7FB8; }
 
@@ -721,9 +745,10 @@ footer {
 }
 
 /* ===== Chart Placeholders ===== */
-.chart-container { min-height: 200px; background: #f8f9fb; border-radius: 8px; padding: 1rem; }
+.chart-container { min-height: 200px; background: transparent; border-radius: 8px; padding: 0.5rem 0; }
 .chart-container.chart-tall { min-height: 360px; }
 .chart-container.chart-medium { min-height: 380px; max-width: 520px; margin: 0 auto; }
+
 .chart-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: #aab4be; }
 .placeholder-note { font-size: 0.85rem; font-style: italic; }
 
@@ -830,7 +855,7 @@ footer {
     white-space: nowrap;
 }
 
-.badge-weak  { background: #fdeaea; color: #c03535; }
+.badge-weak  { background: #fdf4f4; color: #b04545; }
 .badge-avg   { background: #f1f5f9; color: #64748b; }
 .badge-strong { background: #EBF4FB; color: #3A7FB8; }
 
@@ -843,6 +868,7 @@ footer {
     .filter-controls { flex-direction: column; }
     .keyword-item { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
     .keyword-score { width: 100%; }
+    .charts-row { grid-template-columns: 1fr; }
 }
 
 /* ===== Student account banner (teacher student detail) ===== */
@@ -858,7 +884,7 @@ footer {
 }
 
 .account-exists {
-    background: #e4f2e7;
+    background: #eef6f1;
     border-color: #b8dfc0;
     color: #3a6a44;
 }
@@ -929,7 +955,7 @@ footer {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #e05555;
+    background: #cc6060;
     margin-left: 0.3rem;
     vertical-align: middle;
     flex-shrink: 0;
@@ -991,9 +1017,9 @@ footer {
 }
 
 .login-error {
-    background: #fdeaea;
-    color: #c03535;
-    border: 1px solid #f5c0c0;
+    background: #fdf4f4;
+    color: #b04545;
+    border: 1px solid #e8cece;
     border-radius: 8px;
     padding: 0.6rem 0.9rem;
     font-size: 0.85rem;
@@ -1089,7 +1115,7 @@ footer {
 }
 
 .flash-warning { background: #fff8e6; color: #92620a; border: 1px solid #fde68a; }
-.flash-error   { background: #fdeaea; color: #c03535; border: 1px solid #f5c0c0; }
+.flash-error   { background: #fdf4f4; color: #b04545; border: 1px solid #e8cece; }
 .flash-info    { background: #EBF4FB; color: #3A7FB8; border: 1px solid #C5DDF0; }
 
 .error-message {
@@ -1134,3 +1160,6 @@ footer {
     text-decoration: none;
     padding: 0.5rem 1.4rem;
 }
+
+
+
