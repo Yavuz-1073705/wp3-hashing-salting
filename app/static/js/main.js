@@ -13,8 +13,8 @@
   var studentId = dashboard.dataset.studentId;
   if (!studentId) return;
 
-  var C_KENNEN = "#1B3A5C";   // dark navy — for Kennen in all charts & bars
-  var C_KUNNEN = "#3DAA6B";   // TC green  — for Kunnen in all charts & bars
+  var C_KENNEN = "#1B3A5C";   // dark navy  — for Kennen in all charts & bars
+  var C_KUNNEN = "#4A90C4";   // slate-blue — for Kunnen in all charts & bars
 
   var progressChart = null;
   var taxonomyChart = null;
@@ -287,7 +287,7 @@
             label: "Kunnen",
             data: kunnenData,
             borderColor: C_KUNNEN,
-            backgroundColor: "rgba(61, 170, 107, 0.08)",
+            backgroundColor: "rgba(74, 144, 196, 0.10)",
             fill: true,
             tension: 0.3,
           },
@@ -373,7 +373,7 @@
             label: "Kunnen",
             data: kunnenData,
             borderColor: C_KUNNEN,
-            backgroundColor: "rgba(61, 170, 107, 0.12)",
+            backgroundColor: "rgba(74, 144, 196, 0.15)",
             pointBackgroundColor: C_KUNNEN,
           },
         ],
