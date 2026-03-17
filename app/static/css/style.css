@@ -265,24 +265,71 @@ footer {
 /* ===== Stat Cards ===== */
 .dashboard-summary {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
 .stat-card {
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 1.1rem 1.4rem;
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    gap: 0.25rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.15s, transform 0.15s;
+    border-top: 3px solid #4A90C4;
 }
 
-.stat-value { font-size: 1.6rem; font-weight: 700; color: #1B3A5C; line-height: 1.2; }
-.stat-label { font-size: 0.8rem; color: #64748b; }
+.stat-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+    transform: translateY(-1px);
+}
+
+.stat-card.accent-blue   { border-top-color: #4A90C4; }
+.stat-card.accent-green  { border-top-color: #22c55e; }
+.stat-card.accent-red    { border-top-color: #e05555; }
+.stat-card.accent-orange { border-top-color: #e08c20; }
+
+.stat-card-icon {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #EBF4FB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4A90C4;
+    font-size: 1rem;
+}
+
+.stat-card.accent-red    .stat-card-icon { background: #fdeaea; color: #e05555; }
+.stat-card.accent-orange .stat-card-icon { background: #fff3db; color: #c07010; }
+.stat-card.accent-green  .stat-card-icon { background: #e4f2e7; color: #16a34a; }
+
+.stat-label {
+    font-size: 0.74rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #1B3A5C;
+    line-height: 1.1;
+    padding-right: 3.2rem;
+    margin-top: 0.15rem;
+}
 
 /* ===== Filters ===== */
 .dashboard-filters {
