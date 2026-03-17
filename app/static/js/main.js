@@ -13,6 +13,9 @@
   var studentId = dashboard.dataset.studentId;
   if (!studentId) return;
 
+  var C_KENNEN = "#1B3A5C";   // dark navy — for Kennen in all charts & bars
+  var C_KUNNEN = "#3DAA6B";   // TC green  — for Kunnen in all charts & bars
+
   var progressChart = null;
   var taxonomyChart = null;
   var dropdownsPopulated = false;
@@ -275,16 +278,16 @@
           {
             label: "Kennen",
             data: kennenData,
-            borderColor: "#4a90d9",
-            backgroundColor: "rgba(74, 144, 217, 0.1)",
+            borderColor: C_KENNEN,
+            backgroundColor: "rgba(27, 58, 92, 0.08)",
             fill: true,
             tension: 0.3,
           },
           {
             label: "Kunnen",
             data: kunnenData,
-            borderColor: "#e67e22",
-            backgroundColor: "rgba(230, 126, 34, 0.1)",
+            borderColor: C_KUNNEN,
+            backgroundColor: "rgba(61, 170, 107, 0.08)",
             fill: true,
             tension: 0.3,
           },
@@ -362,16 +365,16 @@
           {
             label: "Kennen",
             data: kennenData,
-            borderColor: "#4a90d9",
-            backgroundColor: "rgba(74, 144, 217, 0.2)",
-            pointBackgroundColor: "#4a90d9",
+            borderColor: C_KENNEN,
+            backgroundColor: "rgba(27, 58, 92, 0.12)",
+            pointBackgroundColor: C_KENNEN,
           },
           {
             label: "Kunnen",
             data: kunnenData,
-            borderColor: "#e67e22",
-            backgroundColor: "rgba(230, 126, 34, 0.2)",
-            pointBackgroundColor: "#e67e22",
+            borderColor: C_KUNNEN,
+            backgroundColor: "rgba(61, 170, 107, 0.12)",
+            pointBackgroundColor: C_KUNNEN,
           },
         ],
       },
@@ -403,9 +406,6 @@
     });
   }
 
-  function scoreBarColor(pct) {
-    return pct >= 75 ? "#7cbd8a" : pct >= 50 ? "#c8b87c" : "#cc8a8a";
-  }
 
   function renderGoalsList(goals) {
     var container = document.getElementById("learning-goals-list");
@@ -480,14 +480,14 @@
             '<div class="score-item">' +
               '<span class="score-label">Kennen:</span>' +
               '<div class="progress-bar">' +
-                '<div class="progress-fill" style="width:' + kenPct + '%;background:' + scoreBarColor(kenPct) + '"></div>' +
+                '<div class="progress-fill" style="width:' + kenPct + '%;background:' + C_KENNEN + '"></div>' +
               '</div>' +
               '<span class="score-percentage">' + kenPct + "%</span>" +
             "</div>" +
             '<div class="score-item">' +
               '<span class="score-label">Kunnen:</span>' +
               '<div class="progress-bar">' +
-                '<div class="progress-fill" style="width:' + kunPct + '%;background:' + scoreBarColor(kunPct) + '"></div>' +
+                '<div class="progress-fill" style="width:' + kunPct + '%;background:' + C_KUNNEN + '"></div>' +
               '</div>' +
               '<span class="score-percentage">' + kunPct + "%</span>" +
             "</div>" +

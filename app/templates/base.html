@@ -4,19 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Test Correct Analyse{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
         <nav aria-label="Hoofdnavigatie">
+            <a href="{{ url_for('main.index') }}" class="nav-logo">
+                <img src="{{ url_for('static', filename='logo-test-correct.webp') }}" alt="Test-Correct" height="36">
+            </a>
             <ul>
                 {% if current_user %}
                     {% if current_user.role == 'teacher' %}
-                    <li><a href="{{ url_for('teacher.dashboard') }}">Docent Dashboard</a></li>
+                    <li><a href="{{ url_for('teacher.dashboard') }}">Dashboard</a></li>
                     {% elif current_user.role == 'student' and current_user.student_id %}
                     <li><a href="{{ url_for('student.dashboard', student_id=current_user.student_id) }}">Mijn Dashboard</a></li>
                     {% endif %}
-                    <li><a href="{{ url_for('auth.logout') }}">Uitloggen ({{ current_user.email }})</a></li>
+                    <li class="nav-user">
+                        <span class="nav-user-email">{{ current_user.email }}</span>
+                        <a href="{{ url_for('auth.logout') }}" class="nav-logout">Uitloggen</a>
+                    </li>
                 {% else %}
                     <li><a href="{{ url_for('auth.login') }}">Inloggen</a></li>
                 {% endif %}
@@ -35,7 +44,13 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 Test Correct Analyse POC</p>
+        <div class="footer-inner">
+            <a href="https://www.test-correct.nl/" target="_blank" rel="noopener" class="footer-logo-link">
+                <img src="{{ url_for('static', filename='logo-test-correct.webp') }}" alt="Test-Correct" height="30">
+            </a>
+            <p class="footer-tagline">Proof-of-concept · Leerlingen Analyse</p>
+            <p class="footer-copy">&copy; 2026 Test-Correct</p>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>

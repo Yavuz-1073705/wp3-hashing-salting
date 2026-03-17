@@ -1,6 +1,9 @@
 (function () {
   "use strict";
 
+  var C_KENNEN = "#1B3A5C";   // dark navy — for Kennen in all charts & bars
+  var C_KUNNEN = "#3DAA6B";   // TC green  — for Kunnen in all charts & bars
+
   var statsSection = document.getElementById("stat-students");
   if (!statsSection) return;
 
@@ -58,12 +61,12 @@
           {
             label: "Kennen %",
             data: kennenData,
-            backgroundColor: "#4a90d9",
+            backgroundColor: C_KENNEN,
           },
           {
             label: "Kunnen %",
             data: kunnenData,
-            backgroundColor: "#e67e22",
+            backgroundColor: C_KUNNEN,
           },
         ],
       },
@@ -107,16 +110,16 @@
           {
             label: "Kennen",
             data: kennenData,
-            borderColor: "#4a90d9",
-            backgroundColor: "rgba(74,144,217,0.2)",
-            pointBackgroundColor: "#4a90d9",
+            borderColor: C_KENNEN,
+            backgroundColor: "rgba(27, 58, 92, 0.12)",
+            pointBackgroundColor: C_KENNEN,
           },
           {
             label: "Kunnen",
             data: kunnenData,
-            borderColor: "#e67e22",
-            backgroundColor: "rgba(230,126,34,0.2)",
-            pointBackgroundColor: "#e67e22",
+            borderColor: C_KUNNEN,
+            backgroundColor: "rgba(61, 170, 107, 0.12)",
+            pointBackgroundColor: C_KUNNEN,
           },
         ],
       },
