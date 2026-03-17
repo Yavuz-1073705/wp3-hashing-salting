@@ -10,7 +10,6 @@
     <header>
         <nav aria-label="Hoofdnavigatie">
             <ul>
-                <li><a href="{{ url_for('main.index') }}">Home</a></li>
                 {% if current_user %}
                     {% if current_user.role == 'teacher' %}
                     <li><a href="{{ url_for('teacher.dashboard') }}">Docent Dashboard</a></li>
