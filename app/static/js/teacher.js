@@ -103,11 +103,7 @@
           legend: {
             position: "top",
             labels: {
-              usePointStyle: true,
-              pointStyle: "circle",
-              color: "#475569",
-              font: { size: 12 },
-              padding: 16,
+              usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8, color: "#475569", font: { size: 11 }, padding: 16,
             },
           },
           tooltip: {
@@ -182,11 +178,7 @@
           legend: {
             position: "top",
             labels: {
-              usePointStyle: true,
-              pointStyle: "circle",
-              color: "#475569",
-              font: { size: 12 },
-              padding: 16,
+              usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8, color: "#475569", font: { size: 11 }, padding: 16,
             },
           },
           tooltip: {
@@ -333,3 +325,5 @@
     return div.innerHTML;
   }
 })();
+
+
