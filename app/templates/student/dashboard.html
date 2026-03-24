@@ -5,10 +5,24 @@
 {% block content %}
 <div class="dashboard-container" id="studentDashboard" data-student-id="{{ student.id }}">
     <!-- Dashboard Header -->
-    <header class="dashboard-header">
-        <h1>Dashboard van {{ student.name }}</h1>
-        <p class="subtitle">Bekijk je voortgang en resultaten</p>
-    </header>
+    <div class="dashboard-header">
+        <div class="dashboard-header-main">
+            <h1>Dashboard van {{ student.name }}</h1>
+            <p class="subtitle">Bekijk je voortgang en resultaten</p>
+        </div>
+        {% if current_user and current_user.role == 'teacher' %}
+        <div class="teacher-actions">
+            {% if not student_user %}
+            <span class="no-account-notice">
+                <span class="no-account-dot"></span> Geen account
+            </span>
+            {% endif %}
+            <a href="{{ url_for('teacher.student_detail', student_id=student.id) }}" class="btn-details">
+                Details bekijken
+            </a>
+        </div>
+        {% endif %}
+    </div>
 
     <!-- Filters Section -->
     <section class="filters-section">
@@ -53,43 +67,44 @@
 
     <!-- Summary Statistics (dynamically updated via AJAX) -->
     <section class="dashboard-summary">
-        <div class="stat-card">
-            <div class="stat-icon">#</div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-snapshots">-</div>
-                <div class="stat-label">Metingen</div>
-            </div>
+        <div class="stat-card accent-blue">
+            <div class="stat-card-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div class="stat-label">Metingen</div>
+            <div class="stat-value" id="stat-snapshots">—</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">%</div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-avg-score">-</div>
-                <div class="stat-label">Gemiddelde Score</div>
-            </div>
+        <div class="stat-card accent-green">
+            <div class="stat-card-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="stat-label">Gemiddelde Score</div>
+            <div class="stat-value" id="stat-avg-score">—</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">+</div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-goals">-</div>
-                <div class="stat-label">Leerdoelen</div>
-            </div>
+        <div class="stat-card accent-blue">
+            <div class="stat-card-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="stat-label">Leerdoelen</div>
+            <div class="stat-value" id="stat-goals">—</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">!</div>
-            <div class="stat-content">
-                <div class="stat-value" id="stat-weak">-</div>
-                <div class="stat-label">Aandachtspunten</div>
-            </div>
+        <div class="stat-card accent-red">
+            <div class="stat-card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <div class="stat-label">Aandachtspunten</div>
+            <div class="stat-value" id="stat-weak">—</div>
         </div>
     </section>
 
-    <!-- Progress Over Time Section -->
-    <section class="dashboard-section">
-        <h2>Voortgang Over Tijd</h2>
-        <div class="chart-container">
-            <canvas id="progressChart" role="img" aria-label="Lijndiagram met voortgang over de tijd per leerdoel"></canvas>
-        </div>
-    </section>
+    <!-- Charts Row: Progress (70%) + Taxonomy (30%) -->
+    <div class="charts-row">
+        <section class="dashboard-section">
+            <h2>Voortgang Over Tijd</h2>
+            <div class="chart-container">
+                <canvas id="progressChart" role="img" aria-label="Lijndiagram met voortgang over de tijd per leerdoel"></canvas>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <h2>Taxonomieniveaus</h2>
+            <div class="chart-container">
+                <canvas id="taxonomyChart" role="img" aria-label="Radardiagram met scores per taxonomieniveau (Onthouden, Begrijpen, Toepassen, Analyseren)"></canvas>
+            </div>
+        </section>
+    </div>
 
     <!-- Learning Goals Section -->
     <section class="dashboard-section">
@@ -99,11 +114,11 @@
         </div>
     </section>
 
-    <!-- Taxonomy Section -->
+    <!-- Keywords Section -->
     <section class="dashboard-section">
-        <h2>Taxonomieniveaus</h2>
-        <div class="chart-container">
-            <canvas id="taxonomyChart" role="img" aria-label="Radardiagram met scores per taxonomieniveau (Onthouden, Begrijpen, Toepassen, Analyseren)"></canvas>
+        <h2>Kernwoorden</h2>
+        <div id="student-keywords-list">
+            <p class="no-data-message">Gegevens worden geladen...</p>
         </div>
     </section>
 </div>

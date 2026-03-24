@@ -7,6 +7,30 @@
 
 <h2>Resultaten van {{ student.name }}</h2>
 
+{% if student_user %}
+<div class="account-banner account-exists">
+    <span class="account-banner-icon">&#10003;</span>
+    <span>Account actief: <strong>{{ student_user.email }}</strong></span>
+</div>
+{% else %}
+<div class="account-banner account-missing">
+    <p class="account-banner-title">Geen account &mdash; account aanmaken voor {{ student.name }}</p>
+    <form method="post" action="{{ url_for('teacher.create_student_account', student_id=student.id) }}" class="account-form">
+        <div class="account-form-row">
+            <div class="form-group">
+                <label for="acc-email">E-mailadres</label>
+                <input type="email" id="acc-email" name="email" value="{{ suggested_email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="acc-password">Wachtwoord <span style="font-weight:400;font-size:0.8rem">(min. 6 tekens)</span></label>
+                <input type="password" id="acc-password" name="password" placeholder="Wachtwoord" required minlength="6">
+            </div>
+            <button type="submit" class="btn-primary">Account aanmaken</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
 {% if not goals %}
 <p>Geen resultaten gevonden voor deze leerling.</p>
 {% endif %}

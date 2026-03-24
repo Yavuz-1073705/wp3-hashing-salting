@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, g, flash
 from app import db
-from app.models import Student
+from app.models import Student, User
 
 bp = Blueprint('student', __name__)
 
@@ -53,4 +53,5 @@ def dashboard(student_id):
     if not student:
         abort(404)
 
-    return render_template('student/dashboard.html', student=student)
+    student_user = User.query.filter_by(student_id=student.id).first()
+    return render_template('student/dashboard.html', student=student, student_user=student_user)

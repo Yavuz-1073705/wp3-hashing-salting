@@ -13,6 +13,9 @@
   var studentId = dashboard.dataset.studentId;
   if (!studentId) return;
 
+  var C_KENNEN = "#1B3A5C";   // dark navy  — for Kennen in all charts & bars
+  var C_KUNNEN = "#4A90C4";   // slate-blue — for Kunnen in all charts & bars
+
   var progressChart = null;
   var taxonomyChart = null;
   var dropdownsPopulated = false;
@@ -177,10 +180,11 @@
             "Geen resultaten gevonden voor de gekozen filters. " +
             "Pas je filters aan of klik op <strong>Reset</strong> om alle data te bekijken."
           );
-          renderStats([]);
-          renderProgressChart([]);
-          renderGoalsList([]);
-          renderTaxonomyChart([]);
+        renderStats([]);
+        renderProgressChart([]);
+        renderGoalsList([]);
+        renderTaxonomyChart([]);
+        renderKeywordCloud([]);
           return;
         }
 
@@ -188,6 +192,7 @@
         renderProgressChart(goals);
         renderGoalsList(goals);
         renderTaxonomyChart(goals);
+        renderKeywordCloud(goals);
       })
       .catch(function (err) {
         hideLoading();
@@ -275,39 +280,73 @@
           {
             label: "Kennen",
             data: kennenData,
-            borderColor: "#4a90d9",
-            backgroundColor: "rgba(74, 144, 217, 0.1)",
-            fill: true,
-            tension: 0.3,
+            borderColor: C_KENNEN,
+            backgroundColor: "transparent",
+            fill: false,
+            tension: 0.35,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointBackgroundColor: C_KENNEN,
           },
           {
             label: "Kunnen",
             data: kunnenData,
-            borderColor: "#e67e22",
-            backgroundColor: "rgba(230, 126, 34, 0.1)",
+            borderColor: C_KUNNEN,
+            backgroundColor: "rgba(74, 144, 196, 0.10)",
             fill: true,
-            tension: 0.3,
+            tension: 0.35,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointBackgroundColor: C_KUNNEN,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
         scales: {
           y: {
             min: 0,
             max: 1,
-            title: { display: true, text: "Score" },
+            border: { display: false },
+            ticks: {
+              callback: function (v) { return (v * 100).toFixed(0) + "%"; },
+              stepSize: 0.25,
+              color: "#94a3b8",
+              font: { size: 11 },
+            },
+            grid: { color: "rgba(0,0,0,0.04)" },
           },
           x: {
-            title: { display: true, text: "Datum" },
+            border: { display: false },
+            ticks: {
+              maxTicksLimit: 7,
+              maxRotation: 0,
+              color: "#94a3b8",
+              font: { size: 11 },
+            },
+            grid: { display: false },
           },
         },
         plugins: {
-          legend: { position: "top" },
+          legend: {
+            position: "top",
+            labels: {
+              usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8, color: "#475569", font: { size: 11 }, padding: 16,
+            },
+          },
           tooltip: {
+            backgroundColor: "rgba(15,23,42,0.8)",
+            padding: 10,
             callbacks: {
               label: function (ctx) {
-                return ctx.dataset.label + ": " + (ctx.parsed.y * 100).toFixed(0) + "%";
+                return "  " + ctx.dataset.label + ": " + (ctx.parsed.y * 100).toFixed(0) + "%";
               },
             },
           },
@@ -362,39 +401,57 @@
           {
             label: "Kennen",
             data: kennenData,
-            borderColor: "#4a90d9",
-            backgroundColor: "rgba(74, 144, 217, 0.2)",
-            pointBackgroundColor: "#4a90d9",
+            borderColor: C_KENNEN,
+            borderWidth: 2,
+            backgroundColor: "rgba(27, 58, 92, 0.08)",
+            pointBackgroundColor: C_KENNEN,
+            pointRadius: 3,
+            pointHoverRadius: 5,
           },
           {
             label: "Kunnen",
             data: kunnenData,
-            borderColor: "#e67e22",
-            backgroundColor: "rgba(230, 126, 34, 0.2)",
-            pointBackgroundColor: "#e67e22",
+            borderColor: C_KUNNEN,
+            borderWidth: 2,
+            backgroundColor: "rgba(74, 144, 196, 0.12)",
+            pointBackgroundColor: C_KUNNEN,
+            pointRadius: 3,
+            pointHoverRadius: 5,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { top: 4, bottom: 4, left: 8, right: 8 },
+        },
         scales: {
           r: {
             min: 0,
             max: 1,
-            ticks: {
-              stepSize: 0.2,
-              callback: function (v) {
-                return (v * 100).toFixed(0) + "%";
-              },
+            ticks: { display: false },
+            pointLabels: {
+              font: { size: 10, weight: "500" },
+              color: "#64748b",
             },
+            grid: { color: "rgba(0,0,0,0.07)" },
+            angleLines: { color: "rgba(0,0,0,0.07)" },
           },
         },
         plugins: {
-          legend: { position: "top" },
+          legend: {
+            position: "top",
+            labels: {
+              usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8, color: "#475569", font: { size: 11 }, padding: 16,
+            },
+          },
           tooltip: {
+            backgroundColor: "rgba(15,23,42,0.8)",
+            padding: 10,
             callbacks: {
               label: function (ctx) {
-                return ctx.dataset.label + ": " + (ctx.parsed.r * 100).toFixed(0) + "%";
+                return "  " + ctx.dataset.label + ": " + (ctx.parsed.r * 100).toFixed(0) + "%";
               },
             },
           },
@@ -403,9 +460,6 @@
     });
   }
 
-  function scoreBarColor(pct) {
-    return pct >= 75 ? "#7cbd8a" : pct >= 50 ? "#c8b87c" : "#cc8a8a";
-  }
 
   function renderGoalsList(goals) {
     var container = document.getElementById("learning-goals-list");
@@ -416,8 +470,15 @@
       return;
     }
 
+    var sorted = goals.slice().sort(function (a, b) {
+      var avgKunA = 0, cntA = 0, avgKunB = 0, cntB = 0;
+      a.snapshots.forEach(function (s) { s.taxonomy.forEach(function (t) { avgKunA += t.kunnen; cntA++; }); });
+      b.snapshots.forEach(function (s) { s.taxonomy.forEach(function (t) { avgKunB += t.kunnen; cntB++; }); });
+      return (cntA ? avgKunA / cntA : 0) - (cntB ? avgKunB / cntB : 0);
+    });
+
     var html = "";
-    goals.forEach(function (g) {
+    sorted.forEach(function (g) {
       var kenSum = 0,
         kunSum = 0,
         confSum = 0,
@@ -480,14 +541,14 @@
             '<div class="score-item">' +
               '<span class="score-label">Kennen:</span>' +
               '<div class="progress-bar">' +
-                '<div class="progress-fill" style="width:' + kenPct + '%;background:' + scoreBarColor(kenPct) + '"></div>' +
+                '<div class="progress-fill" style="width:' + kenPct + '%;background:' + C_KENNEN + '"></div>' +
               '</div>' +
               '<span class="score-percentage">' + kenPct + "%</span>" +
             "</div>" +
             '<div class="score-item">' +
               '<span class="score-label">Kunnen:</span>' +
               '<div class="progress-bar">' +
-                '<div class="progress-fill" style="width:' + kunPct + '%;background:' + scoreBarColor(kunPct) + '"></div>' +
+                '<div class="progress-fill" style="width:' + kunPct + '%;background:' + C_KUNNEN + '"></div>' +
               '</div>' +
               '<span class="score-percentage">' + kunPct + "%</span>" +
             "</div>" +
@@ -502,9 +563,67 @@
     container.innerHTML = html;
   }
 
+  function renderKeywordCloud(goals) {
+    var container = document.getElementById("student-keywords-list");
+    if (!container) return;
+
+    if (!goals.length) {
+      container.innerHTML = '<p class="no-data-message">Geen kernwoorden beschikbaar.</p>';
+      return;
+    }
+
+    var kwMap = {};
+    goals.forEach(function (g) {
+      if (!g.keywords || !g.keywords.length) return;
+
+      var kenSum = 0, kunSum = 0, cnt = 0;
+      g.snapshots.forEach(function (s) {
+        s.taxonomy.forEach(function (t) {
+          kenSum += t.kennen;
+          kunSum += t.kunnen;
+          cnt++;
+        });
+      });
+      if (!cnt) return;
+
+      var avgKun = kunSum / cnt;
+      g.keywords.forEach(function (w) {
+        if (!kwMap[w]) kwMap[w] = { kunSum: 0, cnt: 0 };
+        kwMap[w].kunSum += avgKun;
+        kwMap[w].cnt++;
+      });
+    });
+
+    var words = Object.keys(kwMap);
+    if (!words.length) {
+      container.innerHTML = '<p class="no-data-message">Geen kernwoorden beschikbaar.</p>';
+      return;
+    }
+
+    words.sort(function (a, b) {
+      return (kwMap[a].kunSum / kwMap[a].cnt) - (kwMap[b].kunSum / kwMap[b].cnt);
+    });
+
+    var html = '<div class="kw-cloud">';
+    words.forEach(function (w) {
+      var avg = kwMap[w].kunSum / kwMap[w].cnt;
+      var pct = Math.round(avg * 100);
+      var status = avg >= 0.75 ? "strong" : avg >= 0.5 ? "moderate" : "weak";
+      html += '<span class="kw-pill kw-pill-' + status + '" title="Gemiddelde kunnen: ' + pct + '%">' +
+        escapeHtml(w) +
+        '<span class="kw-pill-score">' + pct + '%</span>' +
+        '</span>';
+    });
+    html += "</div>";
+    container.innerHTML = html;
+  }
+
   function escapeHtml(text) {
     var div = document.createElement("div");
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
   }
 })();
+
+
+
