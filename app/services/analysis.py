@@ -6,7 +6,7 @@ from app.models import Student, LearningGoal, Snapshot, TaxonomyScore
 TAXONOMY_ORDER = ['Onthouden', 'Begrijpen', 'Toepassen', 'Analyseren']
 
 
-def get_class_overview():
+def get_class_overview(class_id=None):
     """
     Aggregates all snapshot data to produce a class-level overview.
     Returns per-student averages, per-learning-goal averages,
@@ -14,9 +14,13 @@ def get_class_overview():
 
     Uses bulk queries to avoid N+1 query problems.
     """
-    all_snapshots = Snapshot.query.all()
+    students_query = Student.query.order_by(Student.name)
+    if class_id:
+        students_query = students_query.filter(Student.class_id == class_id)
+    students = students_query.all()
+    student_ids = [student.id for student in students]
 
-    if not all_snapshots:
+    if not student_ids:
         return {
             'stats': {
                 'total_students': 0,
@@ -25,6 +29,37 @@ def get_class_overview():
                 'problem_keywords_count': 0,
             },
             'students': [],
+            'learning_goals': [],
+            'taxonomy_levels': [
+                {'level': lvl, 'avg_kennen': 0, 'avg_kunnen': 0}
+                for lvl in TAXONOMY_ORDER
+            ],
+            'keywords': [],
+        }
+
+    all_snapshots = Snapshot.query.filter(Snapshot.student_id.in_(student_ids)).all()
+
+    if not all_snapshots:
+        student_data = [
+            {
+                'id': student.id,
+                'name': student.name,
+                'class_id': student.class_id,
+                'class_name': student.school_class.name if student.school_class else None,
+                'avg_kennen': 0,
+                'avg_kunnen': 0,
+                'snapshot_count': 0,
+            }
+            for student in students
+        ]
+        return {
+            'stats': {
+                'total_students': len(students),
+                'class_avg_kunnen': 0,
+                'weak_goals_count': 0,
+                'problem_keywords_count': 0,
+            },
+            'students': student_data,
             'learning_goals': [],
             'taxonomy_levels': [
                 {'level': lvl, 'avg_kennen': 0, 'avg_kunnen': 0}
@@ -94,13 +129,14 @@ def get_class_overview():
         goal_stats[lg_id]['students'].add(snap.student_id)
 
     # Per-student averages (no additional DB queries needed)
-    students = Student.query.order_by(Student.name).all()
     student_data = []
     for student in students:
         agg = student_agg[student.id]
         student_data.append({
             'id': student.id,
             'name': student.name,
+            'class_id': student.class_id,
+            'class_name': student.school_class.name if student.school_class else None,
             'avg_kennen': round(agg['ken_sum'] / agg['total'], 3) if agg['total'] else 0,
             'avg_kunnen': round(agg['kun_sum'] / agg['total'], 3) if agg['total'] else 0,
             'snapshot_count': agg['snap_count'],

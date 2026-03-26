@@ -7,13 +7,133 @@
   var statsSection = document.getElementById("stat-students");
   if (!statsSection) return;
 
+  var classFilterSelect = document.getElementById("class-filter-select");
+  var createClassForm = document.getElementById("create-class-form");
+  var newClassNameInput = document.getElementById("new-class-name");
+  var classFeedback = document.getElementById("class-feedback");
+
   var classGoalsChart = null;
   var classTaxonomyChart = null;
+  var classes = [];
 
-  loadClassData();
+  bindEvents();
+  initializeDashboard();
+
+  function bindEvents() {
+    if (classFilterSelect) {
+      classFilterSelect.addEventListener("change", function () {
+        loadClassData();
+      });
+    }
+
+    if (createClassForm) {
+      createClassForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var className = (newClassNameInput && newClassNameInput.value || "").trim();
+        if (!className) {
+          showFeedback("Voer een klasnaam in.", "error");
+          return;
+        }
+
+        createClass(className)
+          .then(function () {
+            showFeedback("Klas toegevoegd.", "success");
+            if (newClassNameInput) newClassNameInput.value = "";
+            return loadClasses();
+          })
+          .then(function () {
+            return loadClassData();
+          })
+          .catch(function (err) {
+            showFeedback(err.message || "Klas kon niet worden aangemaakt.", "error");
+          });
+      });
+    }
+  }
+
+  function initializeDashboard() {
+    loadClasses()
+      .then(function () {
+        return loadClassData();
+      })
+      .catch(function (err) {
+        console.error("Klaslijst kon niet worden geladen:", err);
+        showFeedback("Klaslijst laden is mislukt.", "error");
+        loadClassData();
+      });
+  }
+
+  function getSelectedClassId() {
+    if (!classFilterSelect || !classFilterSelect.value) return null;
+    return classFilterSelect.value;
+  }
+
+  function buildClassOverviewUrl() {
+    var selectedClassId = getSelectedClassId();
+    var url = "/api/class-overview";
+    if (selectedClassId) {
+      url += "?class_id=" + encodeURIComponent(selectedClassId);
+    }
+    return url;
+  }
+
+  function loadClasses() {
+    return fetch("/api/classes")
+      .then(function (res) {
+        if (!res.ok) throw new Error("API fout: " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        classes = Array.isArray(data) ? data : [];
+        renderClassFilterOptions();
+      });
+  }
+
+  function renderClassFilterOptions() {
+    if (!classFilterSelect) return;
+    var previouslySelected = classFilterSelect.value;
+
+    var html = '<option value="">Alle klassen</option>';
+    classes.forEach(function (c) {
+      html +=
+        '<option value="' +
+        c.id +
+        '">' +
+        escapeHtml(c.name) +
+        ' (' +
+        c.student_count +
+        ')</option>';
+    });
+    classFilterSelect.innerHTML = html;
+
+    if (previouslySelected) {
+      var stillExists = classes.some(function (c) {
+        return String(c.id) === String(previouslySelected);
+      });
+      classFilterSelect.value = stillExists ? previouslySelected : "";
+    }
+  }
+
+  function createClass(name) {
+    return fetch("/api/classes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name }),
+    }).then(function (res) {
+      if (!res.ok) {
+        return res
+          .json()
+          .catch(function () { return {}; })
+          .then(function (err) {
+            throw new Error(err.error || "Klas aanmaken mislukt.");
+          });
+      }
+      return res.json();
+    });
+  }
 
   function loadClassData() {
-    fetch("/api/class-overview")
+    fetch(buildClassOverviewUrl())
       .then(function (res) {
         if (!res.ok) throw new Error("API fout: " + res.status);
         return res.json();
@@ -27,10 +147,20 @@
       })
       .catch(function (err) {
         console.error("Klasoverzicht kon niet worden geladen:", err);
+        showFeedback("Klasoverzicht laden is mislukt.", "error");
       });
   }
 
+  function showFeedback(message, kind) {
+    if (!classFeedback) return;
+    classFeedback.textContent = message;
+    classFeedback.hidden = false;
+    classFeedback.classList.remove("is-success", "is-error");
+    classFeedback.classList.add(kind === "success" ? "is-success" : "is-error");
+  }
+
   function renderStats(stats) {
+    if (!stats) return;
     document.getElementById("stat-students").textContent = stats.total_students;
     document.getElementById("stat-class-avg").textContent =
       Math.round(stats.class_avg_kunnen * 100) + "%";
@@ -197,6 +327,7 @@
 
   function renderStudentsTable(students) {
     var container = document.getElementById("students-overview-table");
+    if (!container) return;
 
     if (!students.length) {
       container.innerHTML =
@@ -222,6 +353,7 @@
       '<table class="students-table">' +
       "<thead><tr>" +
       "<th>Leerling</th>" +
+      "<th>Klas</th>" +
       "<th>Kennen</th>" +
       "<th>Kunnen</th>" +
       "<th>Snapshots</th>" +
@@ -254,6 +386,11 @@
         '">' +
         escapeHtml(s.name) +
         "</a></td>" +
+        '<td><select class="student-class-select" data-student-id="' +
+        s.id +
+        '">' +
+        buildClassSelectOptions(s.class_id) +
+        "</select></td>" +
         "<td>" +
         '<div class="table-score-row">' +
         '<div class="progress-bar small"><div class="progress-fill" style="width:' +
@@ -287,6 +424,69 @@
 
     html += "</tbody></table>";
     container.innerHTML = html;
+    bindStudentClassSelects(container);
+  }
+
+  function buildClassSelectOptions(selectedClassId) {
+    var html = '<option value="">Geen klas</option>';
+    classes.forEach(function (c) {
+      var isSelected = String(c.id) === String(selectedClassId || "");
+      html +=
+        '<option value="' +
+        c.id +
+        '"' +
+        (isSelected ? " selected" : "") +
+        ">" +
+        escapeHtml(c.name) +
+        "</option>";
+    });
+    return html;
+  }
+
+  function bindStudentClassSelects(container) {
+    var selects = container.querySelectorAll(".student-class-select");
+    selects.forEach(function (select) {
+      select.addEventListener("change", function () {
+        var studentId = select.getAttribute("data-student-id");
+        var classId = select.value ? parseInt(select.value, 10) : null;
+        assignStudentClass(studentId, classId, select);
+      });
+    });
+  }
+
+  function assignStudentClass(studentId, classId, selectEl) {
+    if (!studentId) return;
+
+    selectEl.disabled = true;
+    fetch("/api/students/" + studentId + "/class", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ class_id: classId }),
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          return res
+            .json()
+            .catch(function () { return {}; })
+            .then(function (err) {
+              throw new Error(err.error || "Klas koppelen mislukt.");
+            });
+        }
+        return res.json();
+      })
+      .then(function () {
+        showFeedback("Klas van leerling bijgewerkt.", "success");
+        return loadClasses();
+      })
+      .then(function () {
+        return loadClassData();
+      })
+      .catch(function (err) {
+        showFeedback(err.message || "Wijzigen van klas mislukt.", "error");
+      })
+      .finally(function () {
+        selectEl.disabled = false;
+      });
   }
 
   function renderKeywords(keywords) {

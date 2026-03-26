@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from flask import Blueprint, jsonify, request, g
 from app import db
-from app.models import Student, Subject, LearningGoal, Snapshot, TaxonomyScore
+from app.models import Student, Subject, LearningGoal, Snapshot, TaxonomyScore, SchoolClass
 
 bp = Blueprint('api', __name__)
 
@@ -136,5 +136,74 @@ def get_class_overview():
     err = _require_teacher()
     if err:
         return err
+
+    class_id = request.args.get('class_id', type=int)
     from app.services.analysis import get_class_overview
-    return jsonify(get_class_overview())
+    return jsonify(get_class_overview(class_id=class_id))
+
+
+@bp.route('/classes')
+def get_classes():
+    """Return all classes with student counts. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
+
+    classes = SchoolClass.query.order_by(SchoolClass.name).all()
+    return jsonify([c.to_dict() for c in classes])
+
+
+@bp.route('/classes', methods=['POST'])
+def create_class():
+    """Create a new class. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
+
+    payload = request.get_json(silent=True) or {}
+    name = (payload.get('name') or '').strip()
+
+    if not name:
+        return jsonify({'error': 'Klasnaam is verplicht'}), 400
+
+    existing = SchoolClass.query.filter(db.func.lower(SchoolClass.name) == name.lower()).first()
+    if existing:
+        return jsonify({'error': 'Deze klas bestaat al'}), 409
+
+    school_class = SchoolClass(name=name)
+    db.session.add(school_class)
+    db.session.commit()
+    return jsonify(school_class.to_dict()), 201
+
+
+@bp.route('/students/<int:student_id>/class', methods=['POST'])
+def assign_student_class(student_id):
+    """Assign or clear class for one student. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
+
+    student = db.session.get(Student, student_id)
+    if not student:
+        return jsonify({'error': 'Student niet gevonden'}), 404
+
+    payload = request.get_json(silent=True) or {}
+    class_id = payload.get('class_id')
+
+    if class_id in (None, '', 0):
+        student.class_id = None
+        db.session.commit()
+        return jsonify(student.to_dict())
+
+    try:
+        class_id = int(class_id)
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Ongeldige klas'}), 400
+
+    school_class = db.session.get(SchoolClass, class_id)
+    if not school_class:
+        return jsonify({'error': 'Klas niet gevonden'}), 404
+
+    student.class_id = school_class.id
+    db.session.commit()
+    return jsonify(student.to_dict())
