@@ -8,6 +8,34 @@
     <p class="subtitle">Klasoverzicht — alle leerlingen</p>
 </div>
 
+<section class="dashboard-section class-management-section">
+    <div class="class-toolbar">
+        <div class="class-toolbar-group">
+            <label for="class-filter-select">Geselecteerde klas</label>
+            <select id="class-filter-select" class="filter-select">
+                <option value="">Alle klassen</option>
+            </select>
+        </div>
+
+        <form id="create-class-form" class="class-create-form">
+            <label for="new-class-name">Nieuwe klas toevoegen</label>
+            <div class="class-create-row">
+                <input
+                    type="text"
+                    id="new-class-name"
+                    class="filter-input"
+                    placeholder="Bijv. H2A"
+                    maxlength="64"
+                    required
+                >
+                <button type="submit" class="btn-apply-filter">Klas maken</button>
+            </div>
+        </form>
+    </div>
+
+    <p id="class-feedback" class="class-feedback" hidden></p>
+</section>
+
 <!-- Summary stats (AJAX) -->
 <div class="dashboard-summary">
     <div class="stat-card accent-blue">

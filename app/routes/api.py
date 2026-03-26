@@ -174,3 +174,36 @@ def create_class():
     db.session.add(school_class)
     db.session.commit()
     return jsonify(school_class.to_dict()), 201
+
+
+@bp.route('/students/<int:student_id>/class', methods=['POST'])
+def assign_student_class(student_id):
+    """Assign or clear class for one student. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
+
+    student = db.session.get(Student, student_id)
+    if not student:
+        return jsonify({'error': 'Student niet gevonden'}), 404
+
+    payload = request.get_json(silent=True) or {}
+    class_id = payload.get('class_id')
+
+    if class_id in (None, '', 0):
+        student.class_id = None
+        db.session.commit()
+        return jsonify(student.to_dict())
+
+    try:
+        class_id = int(class_id)
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Ongeldige klas'}), 400
+
+    school_class = db.session.get(SchoolClass, class_id)
+    if not school_class:
+        return jsonify({'error': 'Klas niet gevonden'}), 404
+
+    student.class_id = school_class.id
+    db.session.commit()
+    return jsonify(student.to_dict())
