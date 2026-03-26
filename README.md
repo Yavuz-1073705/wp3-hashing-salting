@@ -39,6 +39,10 @@ Initialiseer en vul de database met voorbeelddata via Flask CLI:
 python -m flask --app run.py import-data data/data-sample-small.json
 ```
 
+Bij de import worden klassen automatisch aangemaakt en gekoppeld:
+- Als je JSON een klas bevat (`class.name`, `class`, `student.class`, `student.className` of `student.group`), dan wordt die klas aangemaakt/gebruikt.
+- Als er geen klas in de JSON staat, dan wordt de leerling automatisch gekoppeld aan `Onbekende klas`.
+
 Maak testaccounts voor leerlingen + docent aan:
 
 ```powershell
@@ -54,6 +58,12 @@ Leerling logins:
 - E-mailpatroon: `naam@leerling.nl`
 - Voorbeeld: Alex logt in met `alex@leerling.nl`
 - Wachtwoord: `leerling123`
+
+## Klasbeheer (nieuw)
+- Log in als docent en ga naar het docentdashboard.
+- Maak bovenaan een nieuwe klas aan (bijv. `H2A`).
+- Koppel leerlingen aan een klas via de nieuwe kolom `Klas` in de leerlingenlijst.
+- Filter het dashboard op een specifieke klas via `Geselecteerde klas`.
 
 ## 4. Applicatie starten
 Start de applicatie met:
