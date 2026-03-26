@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from flask import Blueprint, jsonify, request, g
 from app import db
-from app.models import Student, Subject, LearningGoal, Snapshot, TaxonomyScore
+from app.models import Student, Subject, LearningGoal, Snapshot, TaxonomyScore, SchoolClass
 
 bp = Blueprint('api', __name__)
 
@@ -136,5 +136,41 @@ def get_class_overview():
     err = _require_teacher()
     if err:
         return err
+
+    class_id = request.args.get('class_id', type=int)
     from app.services.analysis import get_class_overview
-    return jsonify(get_class_overview())
+    return jsonify(get_class_overview(class_id=class_id))
+
+
+@bp.route('/classes')
+def get_classes():
+    """Return all classes with student counts. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
+
+    classes = SchoolClass.query.order_by(SchoolClass.name).all()
+    return jsonify([c.to_dict() for c in classes])
+
+
+@bp.route('/classes', methods=['POST'])
+def create_class():
+    """Create a new class. Teacher only."""
+    err = _require_teacher()
+    if err:
+        return err
+
+    payload = request.get_json(silent=True) or {}
+    name = (payload.get('name') or '').strip()
+
+    if not name:
+        return jsonify({'error': 'Klasnaam is verplicht'}), 400
+
+    existing = SchoolClass.query.filter(db.func.lower(SchoolClass.name) == name.lower()).first()
+    if existing:
+        return jsonify({'error': 'Deze klas bestaat al'}), 409
+
+    school_class = SchoolClass(name=name)
+    db.session.add(school_class)
+    db.session.commit()
+    return jsonify(school_class.to_dict()), 201
