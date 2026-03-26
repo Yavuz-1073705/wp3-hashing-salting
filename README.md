@@ -55,10 +55,12 @@ Docent login:
 - Wachtwoord: `docent123`
 
 Leerling logins:
-(je moet eerst als docent inloggen om een account aan te maken voor een leerling)
-- E-mailpatroon: `naam@leerling.nl`
-- Voorbeeld: Alex logt in met `alex@leerling.nl`
-- Wachtwoord: `leerling123`
+Zo maak je een leerlingaccount aan:
+1. Log in als docent met `docent@school.nl` en `docent123`.
+2. Open het docentdashboard en kies een leerling.
+3. Open de leerlingdetailpagina.
+4. Vul e-mailadres en wachtwoord in bij Account aanmaken.
+5. Klik op Account aanmaken.
 
 ## Klasbeheer
 - Log in als docent en ga naar het docentdashboard.
