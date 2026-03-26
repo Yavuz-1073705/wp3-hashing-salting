@@ -55,11 +55,12 @@ Docent login:
 - Wachtwoord: `docent123`
 
 Leerling logins:
+(je moet eerst als docent inloggen om een account aan te maken voor een leerling)
 - E-mailpatroon: `naam@leerling.nl`
 - Voorbeeld: Alex logt in met `alex@leerling.nl`
 - Wachtwoord: `leerling123`
 
-## Klasbeheer (nieuw)
+## Klasbeheer
 - Log in als docent en ga naar het docentdashboard.
 - Maak bovenaan een nieuwe klas aan (bijv. `H2A`).
 - Koppel leerlingen aan een klas via de nieuwe kolom `Klas` in de leerlingenlijst.
