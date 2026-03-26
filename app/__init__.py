@@ -3,8 +3,18 @@ import click
 from flask import Flask, g, session, render_template
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 db = SQLAlchemy()
+
+
+def _ensure_schema_compatibility():
+    """Apply small additive schema updates for local SQLite databases."""
+    result = db.session.execute(text("PRAGMA table_info(student)"))
+    existing_columns = {row[1] for row in result.fetchall()}
+    if 'class_id' not in existing_columns:
+        db.session.execute(text("ALTER TABLE student ADD COLUMN class_id INTEGER"))
+        db.session.commit()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -26,6 +36,7 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()
+        _ensure_schema_compatibility()
 
     @app.before_request
     def load_logged_in_user():
@@ -56,7 +67,7 @@ def create_app(config_class=Config):
         from app.services.importer import import_data
         from app.models import User
         print(f"Importing from {filepath}...")
-        import_data(filepath)
+        import_data(filepath, default_class_name='Onbekende klas')
 
         if not User.query.filter_by(email='docent@school.nl').first():
             teacher = User(email='docent@school.nl', role='teacher')

@@ -7,13 +7,32 @@ learning_goal_keywords = db.Table('learning_goal_keywords',
     db.Column('keyword_id', db.Integer, db.ForeignKey('keyword.id'), primary_key=True)
 )
 
+
+class SchoolClass(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True, nullable=False)
+    students = db.relationship('Student', backref='school_class', lazy='dynamic')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'student_count': self.students.count(),
+        }
+
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
+    class_id = db.Column(db.Integer, db.ForeignKey('school_class.id'), nullable=True)
     snapshots = db.relationship('Snapshot', backref='student', lazy='dynamic')
 
     def to_dict(self):
-        return {'id': self.id, 'name': self.name}
+        return {
+            'id': self.id,
+            'name': self.name,
+            'class_id': self.class_id,
+            'class_name': self.school_class.name if self.school_class else None,
+        }
 
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)

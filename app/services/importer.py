@@ -1,6 +1,6 @@
 import json
 from app import db
-from app.models import Student, Subject, LearningGoal, Keyword, Snapshot, TaxonomyScore
+from app.models import Student, Subject, LearningGoal, Keyword, Snapshot, TaxonomyScore, SchoolClass
 
 
 def get_or_create(session, model, **kwargs):
@@ -13,11 +13,44 @@ def get_or_create(session, model, **kwargs):
     return instance
 
 
-def import_entry(entry):
+def _extract_class_name(entry):
+    """Read class name from supported payload locations."""
+    student_data = entry.get('student', {})
+    class_data = entry.get('class')
+
+    if isinstance(class_data, dict):
+        return (class_data.get('name') or '').strip() or None
+    if isinstance(class_data, str):
+        return class_data.strip() or None
+
+    for key in ('class', 'className', 'group'):
+        value = student_data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+
+    return None
+
+
+def import_entry(entry, default_class_name='Onbekende klas'):
     """Import a single student-subject entry into the database."""
     # Student
     student_data = entry.get('student', {})
-    student = get_or_create(db.session, Student, id=student_data['id'], name=student_data['name'])
+    student = db.session.get(Student, student_data['id'])
+    if not student:
+        student = Student(id=student_data['id'], name=student_data['name'])
+        db.session.add(student)
+    else:
+        student.name = student_data['name']
+
+    class_name = _extract_class_name(entry)
+    if class_name:
+        school_class = get_or_create(db.session, SchoolClass, name=class_name)
+        student.class_id = school_class.id
+    elif student.class_id is None and default_class_name:
+        fallback_class = get_or_create(db.session, SchoolClass, name=default_class_name)
+        student.class_id = fallback_class.id
+
+    db.session.commit()
 
     # Subject
     subject_data = entry.get('subject', {})
@@ -82,7 +115,7 @@ def import_entry(entry):
     return student, subject
 
 
-def import_data(filepath):
+def import_data(filepath, default_class_name='Onbekende klas'):
     """Import JSON data file. Supports both single entry and entries[] format."""
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
@@ -92,7 +125,7 @@ def import_data(filepath):
         count = 0
 
         for entry in entries:
-            student, subject = import_entry(entry)
+            student, subject = import_entry(entry, default_class_name=default_class_name)
             count += 1
             print(f"  [{count}/{len(entries)}] {student.name} - {subject.name}")
 
