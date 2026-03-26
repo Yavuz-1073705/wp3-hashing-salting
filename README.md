@@ -124,3 +124,6 @@ Voor AJAX:
 
 Voor CSS:
 - https://www.w3schools.com/css/
+
+Voor Python:
+- Werkplaat 2 (oude code van project)
