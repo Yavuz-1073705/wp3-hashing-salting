@@ -140,3 +140,22 @@ Voor CSS:
 
 Voor Python:
 - Werkplaat 2 (oude code van project)
+
+-----------------------------------------------
+
+## Gebruikte bronnen (Slava)
+
+### JavaScript / Animaties
+- Werkplaats jaar 2 (eigen opgebouwde kennis uit voorgaande projecten)
+- [Anime.js](https://animejs.com/) — gebruikt voor UI-animaties en visuele overgangen
+
+### CSS / Design
+- Eigen mockups als ontwerpleidraad
+- [Claude (Anthropic)](https://claude.ai) — AI-tool ingezet voor het genereren en verfijnen van CSS-code op basis van zelfgemaakte mockups; code telkens handmatig beoordeeld en aangepast
+
+### Beveiliging
+- [Snyk AI](https://snyk.io) — gebruikt voor statische code-analyse en het opsporen van beveiligingskwetsbaarheden
+
+### Overig
+- Diverse AI-tools ingezet ter ondersteuning van het ontwikkelproces, met als doel inzicht te krijgen in de mogelijkheden en werkwijze van AI bij softwareontwikkeling
+- Wat hierboven niet expliciet is benoemd, is gebaseerd op kennis en ervaring opgedaan tijdens de opleiding — als tweedejaars student kon ik voor veel onderdelen terugvallen op eerder geleerde stof en eigen inzicht
