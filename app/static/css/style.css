@@ -526,6 +526,59 @@ footer {
     color: #1B3A5C;
 }
 
+.class-management-section {
+    margin-bottom: 1rem;
+}
+
+.class-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.class-toolbar-group,
+.class-create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.class-toolbar-group label,
+.class-create-form label {
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.class-create-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.class-create-row .filter-input {
+    flex: 1;
+}
+
+.class-feedback {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+.class-feedback.is-success {
+    background: #eef6f1;
+    border-color: #b8dfc0;
+    color: #3a6a44;
+}
+
+.class-feedback.is-error {
+    background: #fdf4f4;
+    border-color: #e8cece;
+    color: #b04545;
+}
+
 /* ===== Dashboard Grid ===== */
 .dashboard-grid {
     display: grid;
@@ -847,6 +900,22 @@ footer {
     min-width: 130px;
 }
 
+.student-class-select {
+    min-width: 140px;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid #d1d9e0;
+    border-radius: 8px;
+    background: #fff;
+    color: #1B3A5C;
+    font-size: 0.85rem;
+}
+
+.student-class-select:focus {
+    outline: none;
+    border-color: #4A90C4;
+    box-shadow: 0 0 0 3px rgba(74,144,196,0.15);
+}
+
 .student-status-badge {
     font-size: 0.75rem;
     padding: 0.15rem 0.5rem;
@@ -869,6 +938,8 @@ footer {
     .keyword-item { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
     .keyword-score { width: 100%; }
     .charts-row { grid-template-columns: 1fr; }
+    .class-toolbar { grid-template-columns: 1fr; }
+    .class-create-row { flex-direction: column; }
 }
 
 /* ===== Student account banner (teacher student detail) ===== */
