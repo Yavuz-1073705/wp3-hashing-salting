@@ -8,7 +8,7 @@ Deze README bevat de minimale installatie-informatie die volgens de casus vereis
 - Windows PowerShell (voor de commando's hieronder)
 
 ## 2. Dependencies installeren
-1. Maak (optioneel, maar aanbevolen) een virtual environment aan:
+1. Maak een virtual environment aan:
 
 ```powershell
 python -m venv .venv
@@ -25,6 +25,8 @@ python -m venv .venv
 ```powershell
 pip install -r requirements.txt
 ```
+
+Gebruik de virtual environment voor alle volgende commando's. Zo voorkom je problemen met oude of conflicterende Python-packages die al globaal op je computer staan.
 
 ## 3. Database aanmaken / initialiseren
 Deze applicatie gebruikt SQLite. De database wordt automatisch aangemaakt bij het starten van de app.
@@ -124,22 +126,71 @@ Detailpagina per leerling met resultaten per leerdoel en meetmoment, inclusief t
 
 ## Gebruikte bronnen (Yavuz)
 
-Voor JavaScript:
-- https://www.w3schools.com/js/
-- https://devdocs.io/javascript/
+### Python, Flask en database
+- Gebruikte technieken: Python-functies, `if`/`else`, loops, list comprehensions, dictionaries, `set`, `try`/`except`, imports, returnwaarden, classes, `to_dict()`-serialisatie, Flask Blueprints, routes, `request.args`, `request.form`, `request.get_json()`, `jsonify()`, redirects, `url_for()`, `flash()`, `g.current_user`, CLI-commando's, foutafhandeling met HTTP-statuscodes, SQLAlchemy-modellen, kolommen, foreign keys, relationships, many-to-many tabellen, query's, `filter()`, `filter_by()`, `in_()`, `order_by()`, `first()`, `all()`, `db.session.add()`, `db.session.commit()`, SQLite en wachtwoord-hashing met Werkzeug.
+- Python Software Foundation. (n.d.). *More control flow tools*. Python documentation. https://docs.python.org/3/tutorial/controlflow.html
+- Python Software Foundation. (n.d.). *Data structures*. Python documentation. https://docs.python.org/3/tutorial/datastructures.html
+- Python Software Foundation. (n.d.). *Classes*. Python documentation. https://docs.python.org/3/tutorial/classes.html
+- Python Software Foundation. (n.d.). *Errors and exceptions*. Python documentation. https://docs.python.org/3/tutorial/errors.html
+- Python Software Foundation. (n.d.). *Input and output*. Python documentation. https://docs.python.org/3/tutorial/inputoutput.html
+- Python Software Foundation. (n.d.). *collections - Container datatypes*. Python documentation. https://docs.python.org/3/library/collections.html
+- Pallets Projects. (n.d.). *Quickstart*. Flask documentation. https://flask.palletsprojects.com/en/stable/quickstart/
+- Pallets Projects. (n.d.). *API*. Flask documentation. https://flask.palletsprojects.com/en/stable/api/
+- Pallets Projects. (n.d.). *Modular applications with blueprints*. Flask documentation. https://flask.palletsprojects.com/en/stable/blueprints/
+- Pallets Projects. (n.d.). *Command line interface*. Flask documentation. https://flask.palletsprojects.com/en/stable/cli/
+- Pallets Projects. (n.d.). *Message flashing*. Flask documentation. https://flask.palletsprojects.com/en/stable/patterns/flashing/
+- Pallets Projects. (n.d.). *Custom error pages*. Flask documentation. https://flask.palletsprojects.com/en/stable/patterns/errorpages/
+- Pallets Projects. (n.d.). *Models and tables*. Flask-SQLAlchemy documentation. https://flask-sqlalchemy.palletsprojects.com/en/stable/models/
+- SQLAlchemy. (n.d.). *Legacy query API*. SQLAlchemy 2.0 documentation. https://docs.sqlalchemy.org/en/20/orm/queryguide/query.html
+- Pallets Projects. (n.d.). *Utilities*. Werkzeug documentation. https://werkzeug.palletsprojects.com/en/stable/utils/#werkzeug.security.generate_password_hash
+- SQLite Consortium. (n.d.). *SQLite documentation*. https://www.sqlite.org/docs.html
+- Stack Overflow. (2013). *How do you track the current user in flask-login?* van https://stackoverflow.com/questions/19274226/how-do-you-track-the-current-user-in-flask-login
+- Stack Overflow. (2014). *Flask-SQLAlchemy filters and operators*. https://stackoverflow.com/questions/21674303/flask-sqlalchemy-filters-and-operators
+- Stack Overflow. (2017). *Flask: getting url_prefix for blueprint in view*. https://stackoverflow.com/questions/41599500/flask-getting-url-prefix-for-blueprint-in-view
 
-Voor AJAX:
-- https://www.w3schools.com/js/js_ajax_intro.asp
-- https://stackoverflow.com/questions/6009206/what-is-ajax-and-how-does-it-work
-- https://api.jquery.com/jQuery.ajax/
-- https://www.tutorialspoint.com/javascript/javascript_ajax.htm
-- https://www.geeksforgeeks.org/jquery/what-is-ajax/
+### JavaScript, DOM, AJAX en grafieken
+- Gebruikte technieken: IIFE, `"use strict"`, variabelen, functies, conditionals, loops, `forEach()`, `map()`, `reduce()`, `sort()`, `slice()`, `Object.keys()`, `Array.isArray()`, `parseInt()`, `Math.round()`, template-opbouw met strings, DOM-selectie, `dataset`, `getElementById()`, `querySelectorAll()`, `createElement()`, `appendChild()`, `textContent`, `innerHTML`, event listeners, form submit handling, `preventDefault()`, Fetch API, promises, `.then()`, `.catch()`, `.finally()`, JSON requests, `JSON.stringify()`, `encodeURIComponent()`, loading/error states, HTML escaping en Chart.js lijn-, radar- en staafgrafieken.
+- W3Schools.com. (n.d.). *JavaScript for loop*. https://www.w3schools.com/js/js_loop_for.asp
+- W3Schools.com. (n.d.). *JavaScript array iteration*. https://www.w3schools.com/js/js_array_iteration.asp
+- W3Schools.com. (n.d.). *JavaScript fetch API*. https://www.w3schools.com/js/js_api_fetch.asp
+- W3Schools.com. (n.d.). *AJAX introduction*. https://www.w3schools.com/js/js_ajax_intro.asp
+- W3Schools.com. (n.d.). *HTML DOM document createElement() method*. https://www.w3schools.com/jsref/met_document_createelement.asp
+- W3Schools.com. (n.d.). *HTML DOM element appendChild() method*. https://www.w3schools.com/jsref/met_node_appendchild.asp
+- W3Schools.com. (n.d.). *HTML DOM element addEventListener() method*. https://www.w3schools.com/jsref/met_element_addeventlistener.asp
+- W3Schools.com. (n.d.). *HTML DOM element innerHTML property*. https://www.w3schools.com/jsref/prop_html_innerhtml.asp
+- W3Schools.com. (n.d.). *JSON.stringify()*. https://www.w3schools.com/js/js_json_stringify.asp
+- Chart.js. (n.d.). *Chart.js documentation*. https://www.chartjs.org/docs/latest/
+- Stack Overflow. (2011). *What is AJAX and how does it work?* van https://stackoverflow.com/questions/6009206/what-is-ajax-and-how-does-it-work
+- Stack Overflow. (2020). *How to get the average value of array in JavaScript*. https://stackoverflow.com/questions/60065105/how-to-get-the-average-value-of-array-in-javascript
 
-Voor CSS:
-- https://www.w3schools.com/css/
+### HTML, Jinja templates en formulieren
+- Gebruikte technieken: template inheritance met `extends`/`block`, Jinja `if`/`elif`/`else`, Jinja `for`, `url_for()`, formulieren, inputvelden, submitknoppen, labels, `data-*` attributen, semantische layout, navigatie, flash-messages, foutmeldingen, toegankelijkheidsattributen zoals `role`, `aria-label` en `alt`.
+- Pallets Projects. (n.d.). *Templates*. Flask documentation. https://flask.palletsprojects.com/en/stable/quickstart/#rendering-templates
+- Jinja. (n.d.). *Template designer documentation*. https://jinja.palletsprojects.com/en/stable/templates/
+- W3Schools.com. (n.d.). *HTML forms*. https://www.w3schools.com/html/html_forms.asp
+- W3Schools.com. (n.d.). *HTML semantic elements*. https://www.w3schools.com/html/html5_semantic_elements.asp
+- W3Schools.com. (n.d.). *HTML data-* attribute*. https://www.w3schools.com/tags/att_data-.asp
+- W3Schools.com. (n.d.). *ARIA*. https://www.w3schools.com/accessibility/accessibility_aria.asp
 
-Voor Python:
-- Werkplaat 2 (oude code van project)
+### CSS, layout, responsive design en UI-states
+- Gebruikte technieken: CSS selectors, classes, pseudo-classes, flexbox, grid, media queries, responsive layout, spacing, cards, buttons, forms, focus-states, hover-states, progress bars, status badges, tables, kleuren, borders, border-radius, shadows, typography, `hidden`, loading/no-data states en dashboard styling.
+- W3Schools.com. (n.d.). *CSS tutorial*. https://www.w3schools.com/css/
+- W3Schools.com. (n.d.). *CSS flexbox*. https://www.w3schools.com/css/css3_flexbox.asp
+- W3Schools.com. (n.d.). *CSS grid layout*. https://www.w3schools.com/css/css_grid.asp
+- W3Schools.com. (n.d.). *CSS responsive web design*. https://www.w3schools.com/css/css_rwd_intro.asp
+- W3Schools.com. (n.d.). *CSS media queries*. https://www.w3schools.com/css/css3_mediaqueries.asp
+- W3Schools.com. (n.d.). *CSS forms*. https://www.w3schools.com/css/css_form.asp
+- W3Schools.com. (n.d.). *CSS pseudo-classes*. https://www.w3schools.com/css/css_pseudo_classes.asp
+- W3Schools.com. (n.d.). *CSS variables - The var() function*. https://www.w3schools.com/css/css3_variables.asp
+- W3Schools.com. (n.d.). *CSS rounded corners*. https://www.w3schools.com/css/css3_borders.asp
+- W3Schools.com. (n.d.). *CSS position property*. https://www.w3schools.com/css/css_position.asp
+
+### Documentatie, installatie en screenshots
+- Gebruikte technieken: README-structuur, installatie-instructies, PowerShell-commando's, virtual environment, `pip install -r requirements.txt`, Flask CLI import, seed-data, ERD-afbeelding, screenshotverwijzingen en gebruikersinstructies voor docent-, leerling-, login- en klasbeheerflows.
+- Python Software Foundation. (n.d.). *Installing Python modules*. Python documentation. https://docs.python.org/3/installing/index.html
+- Python Software Foundation. (n.d.). *venv - Creation of virtual environments*. Python documentation. https://docs.python.org/3/library/venv.html
+- PyPA. (n.d.). *pip documentation*. https://pip.pypa.io/en/stable/
+- Microsoft. (n.d.). *PowerShell documentation*. https://learn.microsoft.com/en-us/powershell/
 
 -----------------------------------------------
 
