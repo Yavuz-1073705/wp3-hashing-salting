@@ -196,17 +196,36 @@ Detailpagina per leerling met resultaten per leerdoel en meetmoment, inclusief t
 
 ## Gebruikte bronnen (Slava)
 
-### JavaScript / Animaties
-- Werkplaats jaar 2 (eigen opgebouwde kennis uit voorgaande projecten)
-- [Anime.js](https://animejs.com/) — gebruikt voor UI-animaties en visuele overgangen
+> *Basisvaardigheden zoals HTML, Jinja-templates en algemene programmeerconcepten zijn niet apart vermeld — deze zijn opgebouwd uit ervaring en eerder onderwijs en kwamen zonder externe bronraadpleging tot stand.*
 
-### CSS / Design
-- Eigen mockups als ontwerpleidraad
-- [Claude (Anthropic)](https://claude.ai) — AI-tool ingezet voor het genereren en verfijnen van CSS-code op basis van zelfgemaakte mockups; code telkens handmatig beoordeeld en aangepast
+### Python en Flask routes
+- Pallets Projects. (z.d.). *Blueprints and views*. Flask documentation. https://flask.palletsprojects.com/en/stable/tutorial/views/
+- Pallets Projects. (z.d.). *The request context*. Flask documentation. https://flask.palletsprojects.com/en/stable/reqcontext/
+- Pallets Projects. (z.d.). *API — redirect, url_for, abort, flash*. Flask documentation. https://flask.palletsprojects.com/en/stable/api/
+- SQLAlchemy. (z.d.). *ORM querying guide*. SQLAlchemy documentation. https://docs.sqlalchemy.org/en/20/orm/queryguide/
+
+### JavaScript, DOM en Fetch API
+- MDN Web Docs. (z.d.). *Fetch API*. https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+- MDN Web Docs. (z.d.). *Document: getElementById() method*. https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById
+- MDN Web Docs. (z.d.). *EventTarget: addEventListener() method*. https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+- MDN Web Docs. (z.d.). *Promise*. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+- MDN Web Docs. (z.d.). *Array.prototype.reduce()*. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+- Chart.js. (z.d.). *Chart.js documentation*. https://www.chartjs.org/docs/latest/
+- Julian Garnier. (z.d.). *Anime.js documentation*. https://animejs.com/documentation/
+
+### CSS, design en UX
+- MDN Web Docs. (z.d.). *CSS flexible box layout*. https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout
+- MDN Web Docs. (z.d.). *CSS grid layout*. https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout
+- MDN Web Docs. (z.d.). *CSS transitions*. https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions
+- UPROCK. (z.d.). *⚡️Всё о UX за час!!! Просто о сложном!* [Video]. YouTube. https://www.youtube.com/watch?v=jpXEDEVXzoo — behandelt UX-principes, designpsychologie en visuele hiërarchie.
+- Kole Jain. (z.d.). *Every UI/UX Concept Explained in Under 10 Minutes* [Video]. YouTube. https://www.youtube.com/watch?v=EcbgbKtOELY — behandelt UI/UX-concepten als contrast, spacing en gebruikerservaring.
+- Claude (Anthropic). (2025). *Claude* [Large language model]. https://claude.ai — ingezet als leermiddel om Chart.js-grafieken voor het eerst te begrijpen en op te zetten; daarnaast gebruikt voor het genereren en verfijnen van CSS op basis van eigen mockups. Alle gegenereerde code handmatig beoordeeld en aangepast.
 
 ### Beveiliging
-- [Snyk AI](https://snyk.io) — gebruikt voor statische code-analyse en het opsporen van beveiligingskwetsbaarheden
+- Snyk. (z.d.). *Snyk documentation*. https://docs.snyk.io — gebruikt voor statische code-analyse en beveiligingscontrole.
 
-### Overig
-- Diverse AI-tools ingezet ter ondersteuning van het ontwikkelproces, met als doel inzicht te krijgen in de mogelijkheden en werkwijze van AI bij softwareontwikkeling
-- Wat hierboven niet expliciet is benoemd, is gebaseerd op kennis en ervaring opgedaan tijdens de opleiding — als tweedejaars student kon ik voor veel onderdelen terugvallen op eerder geleerde stof en eigen inzicht
+---
+
+> **Opmerking:** Bovenstaande bronnenlijst is volledig naar beste vermogen opgesteld.
+> De AI-prompts die tijdens het project zijn gebruikt zijn helaas niet meer beschikbaar,
+> omdat de toegang tot het betreffende abonnement is verlopen. Ik hoop op begrip hiervoor.
