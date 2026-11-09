@@ -2,6 +2,16 @@
 
 Deze README bevat de minimale installatie-informatie die volgens de casus vereist is.
 
+## Wachtwoordbeveiliging (Argon2id)
+
+Wachtwoorden worden nooit in leesbare vorm opgeslagen. Ze worden gehasht met **Argon2id** (via `argon2-cffi`), met een unieke willekeurige salt van 128 bit per gebruiker (64 MiB geheugen, 3 iteraties, 4 lanes). De code staat in `app/services/passwords.py`.
+
+- **Account aanmaken** (`teacher.py`) en **inloggen** (`auth.py`) gebruiken `User.set_password()` en `User.check_password()`.
+- **Database:** de kolom `password_updated_at` wordt automatisch toegevoegd aan bestaande databases.
+- **Oude accounts:** een oude Werkzeug-scrypt-hash blijft werken en wordt bij de eerstvolgende succesvolle login omgezet naar Argon2id.
+- `flask --app run.py hash-status` toont per account welk algoritme wordt gebruikt (nooit de hash zelf).
+- Tests draaien met `python -m pytest tests`.
+
 ## 1. Vereiste software
 - Python 3.11 of hoger
 - pip
