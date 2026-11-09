@@ -16,6 +16,14 @@ def _ensure_schema_compatibility():
         db.session.execute(text("ALTER TABLE student ADD COLUMN class_id INTEGER"))
         db.session.commit()
 
+    result = db.session.execute(text("PRAGMA table_info(user)"))
+    user_columns = {row[1] for row in result.fetchall()}
+    if 'password_updated_at' not in user_columns:
+        # Existing rows keep NULL: their old Werkzeug hash is upgraded to
+        # Argon2id on the next successful login.
+        db.session.execute(text("ALTER TABLE user ADD COLUMN password_updated_at DATETIME"))
+        db.session.commit()
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -102,5 +110,17 @@ def create_app(config_class=Config):
 
         db.session.commit()
         print(f'{added} gebruiker(s) aangemaakt.')
+
+    @app.cli.command('hash-status')
+    def hash_status_command():
+        """Show which hash algorithm each account uses (never prints hashes)."""
+        from app.models import User
+        from app.services.passwords import hash_algorithm
+        users = User.query.order_by(User.id).all()
+        for user in users:
+            print(f'{user.email:<30} {hash_algorithm(user.password_hash)}')
+        legacy = sum(1 for u in users if not u.password_hash.startswith('$argon2id$'))
+        print(f'{len(users)} account(s), {legacy} nog met een oude hash '
+              '(wordt bij de eerstvolgende login omgezet naar Argon2id).')
 
     return app

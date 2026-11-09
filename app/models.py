@@ -1,5 +1,7 @@
+from datetime import datetime, timezone
+
 from app import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from app.services.passwords import hash_password, needs_rehash, verify_password
 
 # Association table for LearningGoal and Keyword
 learning_goal_keywords = db.Table('learning_goal_keywords',
@@ -102,7 +104,11 @@ class User(db.Model):
     """Application user: either a student or a teacher."""
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    # Argon2id hash string: contains algorithm, parameters, salt and hash.
     password_hash = db.Column(db.String(256), nullable=False)
+    # When the current hash was created. NULL = old Werkzeug hash from before
+    # the switch to Argon2id that has not been upgraded yet.
+    password_updated_at = db.Column(db.DateTime, nullable=True)
     # role: 'student' or 'teacher'
     role = db.Column(db.String(20), nullable=False, default='student')
     # Foreign key to the Student record (only used for role 'student')
@@ -110,10 +116,21 @@ class User(db.Model):
     student = db.relationship('Student', backref=db.backref('user', uselist=False))
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        """Store an Argon2id hash (with a new random salt) of the password."""
+        self.password_hash = hash_password(password)
+        self.password_updated_at = datetime.now(timezone.utc)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        """Verify the password and upgrade an outdated hash to Argon2id.
+
+        Returns True when the password is correct. The caller must commit the
+        session so an upgraded hash is saved.
+        """
+        if not verify_password(self.password_hash, password):
+            return False
+        if needs_rehash(self.password_hash):
+            self.set_password(password)
+        return True
 
     def to_dict(self):
         return {'id': self.id, 'email': self.email, 'role': self.role}
