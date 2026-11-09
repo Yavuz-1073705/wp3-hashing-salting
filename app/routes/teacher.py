@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, g, flash, request
 from app import db
 from app.models import Student, Snapshot, LearningGoal, User
+from app.services.passwords import MIN_PASSWORD_LENGTH
 
 bp = Blueprint('teacher', __name__)
 
@@ -101,8 +102,8 @@ def create_student_account(student_id):
         flash('E-mailadres en wachtwoord zijn verplicht.', 'error')
         return redirect(url_for('teacher.student_detail', student_id=student_id))
 
-    if len(password) < 6:
-        flash('Wachtwoord moet minimaal 6 tekens zijn.', 'error')
+    if len(password) < MIN_PASSWORD_LENGTH:
+        flash(f'Wachtwoord moet minimaal {MIN_PASSWORD_LENGTH} tekens zijn.', 'error')
         return redirect(url_for('teacher.student_detail', student_id=student_id))
 
     if User.query.filter_by(email=email).first():
